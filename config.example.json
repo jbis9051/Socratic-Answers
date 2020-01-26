@@ -1,0 +1,16 @@
+{
+  "server":{
+    "port": 3000
+  },
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "port": 3307,
+    "password": "",
+    "database": "qna"
+  },
+  "mailgun": {
+    "apiKey": "",
+    "domain": ""
+  }
+}
