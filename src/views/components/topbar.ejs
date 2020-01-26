@@ -1,0 +1,16 @@
+<div class="top-bar">
+    <div class="site-graphics">
+        <span>Sitename</span>
+    </div>
+    <nav class="nav-list">
+        <% if(user === null) { %>
+            <a href="/users/signup" class="nav-button signup">Sign Up</a>
+            <a href="/users/signin" class="nav-button signin">Sign In</a>
+        <% } else  { %>
+            <a href="/users/logout" class="nav-button">Logout <%= user.username %></a>
+        <% } %>
+        <a class="nav-button">Questions</a>
+        <a class="nav-button">Meta</a>
+        <a class="nav-button">New Question</a>
+    </nav>
+</div>

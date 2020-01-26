@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/standard-head') %>
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/users/signup.css">
+    <title>Sign Up</title>
+</head>
+<body>
+<%- include('../components/topbar', {user: user}) %>
+<div class="form-wrapper">
+    <img alt="logo" class="logo" src="">
+    <form class="form" action="signin?r=<%= redir || "" %>" method="post">
+        <% if(errorMessage) { %>
+            <span class="error"><%= errorMessage %></span>
+        <% } %>
+        <% if(redir) { %>
+            <span class="error">Please sign in to complete this action or to access this page.</span>
+        <% } %>
+        <label>Email</label>
+        <input name="email" type="text">
+        <label>Password</label>
+        <input name="password" type="password">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="btn">Login</button>
+        <a href="/">← Back Home</a>
+    </form>
+</div>
+</body>
+</html>

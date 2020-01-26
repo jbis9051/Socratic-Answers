@@ -1,0 +1,13 @@
+.form {
+    width: 400px;
+}
+.checkbox {
+    width: 27px;
+}
+.checkbox-flex {
+    display: flex;
+}
+.email-opt {
+    font-size: 12px;
+    padding: 10px;
+}

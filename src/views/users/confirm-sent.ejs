@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/standard-head') %>
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/users/signup.css">
+    <title>Sign Up</title>
+</head>
+<body>
+<%- include('../components/topbar', {user: user}) %>
+<div class="form-wrapper">
+    <img alt="logo" class="logo" src="">
+    <div class="form">
+        <% if(error === null) { %>
+            <span class="confirm-text">A confirmation email has been sent. Please check your inbox and junk mail.</span>
+        <% } else { %>
+            <span class="confirm-text">An error occurred sending the confirmation email.</span>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>

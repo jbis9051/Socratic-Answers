@@ -1,0 +1,41 @@
+const express = require('express');
+const router = express.Router();
+
+const csrfProtection = require('../../middleware/csurf');
+const tokenizeResponse = require('../../helpers/tokenizeResponse');
+
+const User = require('../../models/User');
+
+router.get('/signin', csrfProtection, function (req, res, next) {
+    res.render('users/signin', {
+        errorMessage: null,
+        redir: req.query.r || null,
+        user: req.user,
+        csrfToken: req.csrfToken()
+    });
+});
+
+router.post('/signin', csrfProtection, async function (req, res, next) {
+    function error(message = "Username and Password don't match") {
+        res.render('users/signin', {
+            errorMessage: message,
+            redir: req.query.r || null,
+            user: req.user,
+            csrfToken: req.csrfToken()
+        });
+    }
+
+    if (!req.body.email || !req.body.password) {
+        error();
+        return;
+    }
+    const user = await User.FromCredentials(req.body.email, req.body.password);
+    if (!user) {
+        error();
+        return;
+    }
+    await tokenizeResponse(user, res);
+    res.redirect(req.query.r || "/");
+});
+
+module.exports = router;

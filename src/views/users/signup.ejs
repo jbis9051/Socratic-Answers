@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/standard-head') %>
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/users/signup.css">
+    <title>Sign Up</title>
+</head>
+<body>
+<%- include('../components/topbar', {user: user}) %>
+<div class="form-wrapper">
+    <img alt="logo" class="logo" src="">
+    <form class="form" action="signup" method="post">
+        <% errors.forEach(errorMessage => { %>
+            <span class="error"><%= errorMessage %></span>
+        <% }); %>
+        <label for="username">Username</label>
+        <input name="username" id="username" value="<%= username %>" type="text">
+        <span class="instruction">Username must contain only letters and numbers and between 4 and 30 characters.</span>
+        <label for="email">Email</label>
+        <input name="email" id="email" value="<%= email %>" type="email">
+        <label for="password">Password</label>
+        <input name="password" id="password" type="password">
+        <span class="instruction">Password must be greater than 8 characters and must have at least one uppercase and lowercase letter. </span>
+        <div class="checkbox-flex">
+            <input type="checkbox" class="checkbox" checked id="accept-spam"><label class="email-opt" for="accept-spam">Opt-in
+                to
+                receiving updates on how
+                development is coming along and different changes made to the site. You will not be spammed with any
+                promotional content. You can change this in your user settings.</label>
+        </div>
+        <button type="submit" class="btn">Sign Up</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <a href="/">← Back Home</a>
+    </form>
+</div>
+<script src="/js/users/signup.js"></script>
+</body>
+</html>
