@@ -10,7 +10,6 @@ router.get('/signin', csrfProtection, function (req, res, next) {
     res.render('users/signin', {
         errorMessage: null,
         redir: req.query.r || null,
-        user: req.user,
         csrfToken: req.csrfToken()
     });
 });
@@ -20,7 +19,6 @@ router.post('/signin', csrfProtection, async function (req, res, next) {
         res.render('users/signin', {
             errorMessage: message,
             redir: req.query.r || null,
-            user: req.user,
             csrfToken: req.csrfToken()
         });
     }
@@ -32,6 +30,11 @@ router.post('/signin', csrfProtection, async function (req, res, next) {
     const user = await User.FromCredentials(req.body.email, req.body.password);
     if (!user) {
         error();
+        return;
+    }
+    if (!await user.getEmailConfirmed()) {
+        await user.resendInitialConfirmEmailIfNecessary();
+        error("User not confirmed. Please check your email or junk mail.");
         return;
     }
     await tokenizeResponse(user, res);

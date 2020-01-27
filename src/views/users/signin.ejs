@@ -8,7 +8,7 @@
     <title>Sign Up</title>
 </head>
 <body>
-<%- include('../components/topbar', {user: user}) %>
+<%- include('../components/topbar', {user: currentUser}) %>
 <div class="form-wrapper">
     <img alt="logo" class="logo" src="">
     <form class="form" action="signin?r=<%= redir || "" %>" method="post">

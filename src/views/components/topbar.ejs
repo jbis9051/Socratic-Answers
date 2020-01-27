@@ -2,15 +2,23 @@
     <div class="site-graphics">
         <span>Sitename</span>
     </div>
-    <nav class="nav-list">
+    <div class="right-stack">
         <% if(user === null) { %>
             <a href="/users/signup" class="nav-button signup">Sign Up</a>
             <a href="/users/signin" class="nav-button signin">Sign In</a>
         <% } else  { %>
-            <a href="/users/logout" class="nav-button">Logout <%= user.username %></a>
+            <a href="/users/profile" class="user-badge">
+                <img src="<%= user.profile_image %>">
+                <span class="username"><%= user.username %></span>
+            </a>
         <% } %>
-        <a class="nav-button">Questions</a>
-        <a class="nav-button">Meta</a>
-        <a class="nav-button">New Question</a>
-    </nav>
+        <div id="topbarHamburger" class="topbar-hamburger fa fa-bars"></div>
+    </div>
+
+    <div id="topbarExpand">
+        <nav class="nav-list">
+            <a class="nav-button">Questions</a>
+            <a class="nav-button">Meta</a>
+        </nav>
+    </div>
 </div>

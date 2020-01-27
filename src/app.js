@@ -22,7 +22,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     res.status(404);
-    res.render('404', {user: req.user});
+    res.render('404');
 });
 
 

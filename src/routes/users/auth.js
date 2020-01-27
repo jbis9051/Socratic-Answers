@@ -5,6 +5,7 @@ const router = express.Router();
 router.all(['/', '/*'], async function (req, res, next) {
     if (!req.cookies.token) {
         req.user = null;
+        res.locals.currentUser = req.user;
         next();
         return;
     }
@@ -12,6 +13,7 @@ router.all(['/', '/*'], async function (req, res, next) {
     if (!req.user || !await req.user.getEmailConfirmed()) {
         req.user = null;
     }
+    res.locals.currentUser = req.user;
     next();
 });
 

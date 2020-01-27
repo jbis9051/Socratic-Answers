@@ -1,9 +1,12 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     padding-top: 60px;
-    background: #f1f1f1;
+    background: #16151b;
+    color: #e2e2e2;
 }
+
 a {
+    color: inherit;
     text-decoration: none;
 }
 
@@ -17,22 +20,26 @@ a {
     justify-content: space-between;
     align-items: center;
     border-top: orange 3px solid;
-    box-shadow: black 0px -10px 17px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    border-bottom: #111111 1px solid;
+    overflow: visible;
+    background: #1c1b21;
 }
 
 .site-graphics {
     padding: 5px 10px;
 }
 
-.nav-list {
+.right-stack {
+    margin: 5px;
     max-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .nav-button, .btn {
     display: inline-block;
-    margin: 5px;
     padding: 3px 10px;
     border-radius: 0.25rem;
     color: white;
@@ -49,8 +56,73 @@ a {
 .nav-button {
     color: white;
     background: #ed9900;
+    margin: 5px;
 }
+
 .nav-button:hover {
     color: #d2d2d2;
     background: #975e00;
 }
+
+.user-badge {
+    height: 100%;
+    display: inline-block;
+    padding: 10px;
+}
+
+.user-badge img {
+    width: 35px;
+    height: 35px;
+}
+
+.user-badge .username {
+    font-size: 15px;
+    margin: 7px;
+}
+
+.user-badge:hover {
+    background: #29282e;
+}
+
+.topbar-hamburger {
+    font-size: 22px;
+    padding: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+#topbarExpand {
+    display: none;
+    position: absolute;
+    top: 56px; /* this isn't magic! | 60px (height of the top bar) - 3px (height of the top border) - 1px (height of the bottom border) */
+    right: 0;
+    background: #1c1b21;
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+}
+#topbarExpand.active {
+    display: block;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/*
+.nav-list {
+position: absolute;
+background:white;
+top: 50px;
+margin: 0;
+padding: 5px;
+display: flex;
+flex-direction: column;
+max-height: 100vh;
+width: 100%;
+}
+
+
+
+ */
