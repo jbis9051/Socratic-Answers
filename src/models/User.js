@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 
-const conn = require('../database/mysql.js').create();
+const conn = require('../database/postges.js').pool;
 const mailgun = require('../helpers/mailgun.js');
 
 const TimeHelper = require('../helpers/time');
@@ -18,15 +18,15 @@ class User {
 
     /* getters */
 
-    async getEmailConfirmed(){
-        const [[row]] = await conn.execute("SELECT email_confirmed FROM users WHERE id = ?", [this.id]);
-        return row.email_confirmed === 1;
+    async getEmailConfirmed() {
+        const {row} = await conn.singleRow("SELECT email_confirmed FROM users WHERE id = $1", [this.id]);
+        return row.email_confirmed;
     }
 
     /* creation */
 
     static async FromQuery(query) {
-        const [[row]] = await query;
+        const {row} = await query;
         if (!row) {
             return null;
         }
@@ -34,18 +34,18 @@ class User {
     }
 
     static FromId(id) {
-        return User.FromQuery(conn.execute("SELECT * FROM `users` WHERE id = ?", [id]));
+        return User.FromQuery(conn.singleRow("SELECT * FROM users WHERE id = $1", [id]));
     }
 
     static FromEmail(email) {
-        return User.FromQuery(conn.execute("SELECT * FROM `users` WHERE email = ?", [email]));
+        return User.FromQuery(conn.singleRow("SELECT * FROM users WHERE email = $1", [email]));
     }
 
     static async FromToken(token) {
         if (!token) {
             return null;
         }
-        const [[row]] = await conn.execute("SELECT token,user_id FROM `tokens` WHERE `token` = ? AND `created` >=  CURDATE() - INTERVAL 1 DAY", [token]);
+        const {row} = await conn.singleRow("SELECT token,user_id FROM tokens WHERE token = $1 AND created >=  CURRENT_DATE - INTERVAL '10' DAY", [token]);
         if (!row || token.length !== row.token.length || !(await crypto.timingSafeEqual(Buffer.from(token), Buffer.from(row.token)))) {
             return null;
         }
@@ -66,7 +66,7 @@ class User {
 
         const token = crypto.randomBytes(64).toString('hex');
 
-        conn.execute("INSERT INTO `confirmation-emails` (userid, code, email) VALUES (?, ?, ?)", [this.id, token, email]);
+        conn.query("INSERT INTO \"confirmation-emails\" (userid, code, email) VALUES ($1, $2, $3)", [this.id, token, email]);
 
 
         return await mailgun.helpers.simpleText(this.email, "Confirm Email - Sitename", `Please click the link below to confirm your email for Sitename. 
@@ -77,19 +77,23 @@ class User {
     }
 
     static _removeConfirmationEmail(id) {
-        return conn.execute("DELETE FROM `confirmation-emails` WHERE id = ?", [id]);
+        return conn.query("DELETE FROM \"confirmation-emails\" WHERE id = $1", [id]);
     }
 
-    async resendInitialConfirmEmailIfNecessary(){
-        const [[row]] = await conn.execute("SELECT id, created, email FROM `confirmation-emails` WHERE email = ?", [this.email]);
-        if(TimeHelper.daysBetweenMili(row.created.getTime(), Date.now()) >= 1){
+    async resendInitialConfirmEmailIfNecessary() {
+        const {row} = await conn.singleRow("SELECT id, created, email FROM \"confirmation-emails\" WHERE email = $1", [this.email]);
+        if (!row) { // confirmation email wasn't sent for some reason
+            await this.sendConfirmEmail(this.email);
+            return;
+        }
+        if (TimeHelper.daysBetweenMili(row.created.getTime(), Date.now()) >= 1) { // expired
             User._removeConfirmationEmail(row.id);
             await this.sendConfirmEmail(row.email);
         }
     }
 
     resendConfirmEmailIfNecessary(timeout = 1) {
-        const [[row]] = conn.execute("SELECT created FROM `confirmation-emails` WHERE userid = ?", [this.id]);
+        const {row} = conn.singleRow("SELECT created FROM \"confirmation-emails\" WHERE userid = $1", [this.id]);
         if (TimeHelper.daysBetweenMili(row.created.getTime(), Date.now()) >= timeout) {
             return this.sendConfirmEmail(this.email);
         }
@@ -97,7 +101,7 @@ class User {
 
 
     static async confirmEmail(token) {
-        const [[row]] = await conn.execute("SELECT id,userid,email,created,code FROM `confirmation-emails` WHERE code = ?", [token]);
+        const {row} = await conn.singleRow("SELECT id,userid,email,created,code FROM \"confirmation-emails\" WHERE code = $1", [token]);
         if (!row) {
             return false;
         }
@@ -107,7 +111,7 @@ class User {
         if (!crypto.timingSafeEqual(Buffer.from(row.code), Buffer.from(token))) {
             return false;
         }
-        await Promise.all([User._removeConfirmationEmail(row.id), conn.execute("UPDATE users SET email = ?, email_confirmed = TRUE WHERE id = ?", [row.email, row.userid])]);
+        await Promise.all([User._removeConfirmationEmail(row.id), conn.query("UPDATE users SET email = $1, email_confirmed = TRUE WHERE id = $2", [row.email, row.userid])]);
         return await User.FromId(row.userid);
     }
 
@@ -116,8 +120,8 @@ class User {
 
     static async signUp(username, email, password) {
         const hash = await bcrypt.hash(password, 10);
-        const [results] = await conn.execute("INSERT INTO `users` (`username`,`password`,`email`) VALUES (?,?,?)", [username, hash, email]);
-        return await User.FromId(results.insertId);
+        const {row} = await conn.singleRow("INSERT INTO users (username,password,email) VALUES ($1,$2,$3) RETURNING id as insertId", [username, hash, email]);
+        return await User.FromId(row.insertId);
     }
 
     static async emailExists(email) {
@@ -128,7 +132,7 @@ class User {
     /* authentication */
 
     static async authenticateUser(email, password) {
-        const [[row]] = await conn.execute("SELECT password FROM `users` WHERE email = ?", [email]);
+        const {row} = await conn.singleRow("SELECT password FROM users WHERE email = $1", [email]);
         if (!row) {
             return false;
         }
@@ -137,20 +141,20 @@ class User {
 
 
     removeAllTokens() {
-        return conn.execute("DELETE FROM tokens WHERE user_id = ?", [this.id]);
+        return conn.query("DELETE FROM tokens WHERE user_id = $1", [this.id]);
     }
 
     static removeToken(token) {
-        return conn.execute("DELETE FROM tokens WHERE token = ?", [token]);
+        return conn.query("DELETE FROM tokens WHERE token = $1", [token]);
     }
 
     removeTokensOldThan(days) {
-        return conn.execute("DELETE FROM tokens WHERE user_id = ? AND created <= CURDATE() - INTERVAL ? DAY", [this.id, days]);
+        return conn.query("DELETE FROM tokens WHERE user_id = $1 AND created <= CURRENT_DATE - INTERVAL $2 DAY", [this.id, days.toString()]);
     }
 
     async addToken() {
         const token = crypto.randomBytes(64).toString('hex');
-        await conn.execute("INSERT INTO tokens (token, user_id) VALUES (?, ?)", [token, this.id]);
+        await conn.query("INSERT INTO tokens (token, user_id) VALUES ($1, $2)", [token, this.id]);
         return token;
     }
 
