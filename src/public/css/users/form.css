@@ -10,13 +10,14 @@
     border-radius: 0.25rem;
     padding: 25px;
     margin: 0 auto;
-    background: white;
-    color: rgba(12, 12, 12, 0.87);
+    background: #2c2a35;
+    color: #e8e8e8;
 }
+
 .instruction {
     display: block;
     font-size: 11px;
-    color: gray;
+    color: #a3a3a3;
 }
 
 label {
@@ -60,6 +61,7 @@ a:hover {
     display: block;
     color: red;
 }
+
 .btn {
     font-size: 19px;
 }

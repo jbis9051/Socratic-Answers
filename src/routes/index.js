@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', function (req, res, next) {
-    res.render('index');
+const Question = require('../models/Question');
+
+router.get('/', async function (req, res, next) {
+    res.render('index', {questions: await Question.getQuestions(1)});
 });
 
 router.use('/users', require('./users'));

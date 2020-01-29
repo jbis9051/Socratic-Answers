@@ -1,15 +1,3 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    padding-top: 60px;
-    background: #16151b;
-    color: #e2e2e2;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
 .top-bar {
     position: fixed;
     top: 0;
@@ -22,7 +10,7 @@ a {
     border-top: orange 3px solid;
     border-bottom: #111111 1px solid;
     overflow: visible;
-    background: #1c1b21;
+    background: #2c2a35;
 }
 
 .site-graphics {

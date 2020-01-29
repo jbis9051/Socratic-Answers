@@ -19,6 +19,9 @@
         <nav class="nav-list">
             <a class="nav-button">Questions</a>
             <a class="nav-button">Meta</a>
+            <% if(user !== null) { %>
+            <a href="/users/logout" class="nav-button">Logout</a>
+            <% } %>
         </nav>
     </div>
 </div>

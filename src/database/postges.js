@@ -12,7 +12,7 @@ module.exports = {
         },
         multiRow: async (string, values = []) => {
             const result = await pool.query(string, values);
-            return {row: result.rows, result: result};
+            return {rows: result.rows, result: result};
         },
     },
     end: () => pool.end()

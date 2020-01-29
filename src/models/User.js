@@ -161,6 +161,12 @@ class User {
     /* profile changes */
 
 
+    /* other */
+
+    toSiteUser(){
+
+    }
+
 }
 
 module.exports = User;
