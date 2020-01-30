@@ -13,7 +13,6 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    border-right: 1px solid #a0a0a0;
     text-align: center;
 }
 .question-metadata > div {
@@ -33,7 +32,9 @@
     color: #a0a0a0;
 }
 .question-content {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .question-title {
     font-size: 25px;
@@ -56,8 +57,6 @@
     text-decoration: underline;
 }
 .question-tags {
-    position: absolute;
-    bottom: 0;
     overflow: hidden;
     white-space: nowrap;
     padding: 5px 5px 5px 0;

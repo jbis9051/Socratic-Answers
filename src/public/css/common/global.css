@@ -6,6 +6,9 @@ body {
 }
 
 a {
-    color: inherit;
+    color: #37c9ff;
     text-decoration: none;
+}
+a:hover {
+    color: #35a2d6;
 }

@@ -8,6 +8,7 @@ router.get('/', async function (req, res, next) {
 });
 
 router.use('/users', require('./users'));
+router.use('/questions', require('./question'));
 
 
 module.exports = router;

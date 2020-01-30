@@ -10,10 +10,14 @@
         </div>
     </div>
     <div class="question-content">
-        <a class="question-title"><%= question.title %></a>
-        <div class="question-subtext">
-            <span>created <%= question.getCreatedFriendlyTimeAgo() %> by</span>
-            <a href="" class="question-creator"><%= question.creator.username %></a>
+        <div>
+            <a href="/questions/<%= question.id %>/<%= friendlyURLPath(question.title) %>"
+               class="question-title"><%= question.title %></a>
+            <div class="question-subtext">
+                <span>created <%= question.getCreatedFriendlyTimeAgo() %> by</span>
+                <a href="/users/<%= question.creator.id %>"
+                   class="question-creator"><%= question.creator.username %></a>
+            </div>
         </div>
         <div class="question-tags">
             <% question.taglist.forEach(tag => { %>

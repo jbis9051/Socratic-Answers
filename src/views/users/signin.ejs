@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <%- include('components/common/standard-head') %>
+    <%- include('../components/common/standard-head') %>
     <link rel="stylesheet" href="/css/users/form.css">
     <link rel="stylesheet" href="/css/users/signup.css">
     <title>Sign Up</title>
 </head>
 <body>
-<%- include('components/common/topbar', {user: currentUser}) %>
+<%- include('../components/common/topbar', {user: currentUser}) %>
 <div class="form-wrapper">
     <img alt="logo" class="logo" src="">
     <form class="form" action="signin?r=<%= redir || "" %>" method="post">
