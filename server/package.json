@@ -1,0 +1,20 @@
+{
+  "name": "@socraticanswers/socraticanswers",
+  "version": "1.0.0",
+  "description": "The Socratic Answers web backend",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "cookie-parser": "^1.4.4",
+    "csurf": "^1.11.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "javascript-time-ago": "^2.0.6",
+    "mailgun-js": "^0.22.0",
+    "morgan": "^1.9.1",
+    "pg": "^7.17.1"
+  }
+}

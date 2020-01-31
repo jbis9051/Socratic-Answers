@@ -1,3 +1,9 @@
 /.idea/
+
+
+/server/config.json
+
+
 /node_modules/
-config.json
+/server/node_modules/
+/client/node_modules/
