@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<%- include('../../common/components/topbar/topbar', {user: currentUser}) %>
+<div class="content">
+    <h2 class="title">Questions</h2>
+    <div class="question-list">
+        <% questions.forEach(question => { %>
+            <%- include('../../common/components/question-list/question',{question: question}) %>
+        <% }); %>
+    </div>
+</div>
+</body>
+</html>
