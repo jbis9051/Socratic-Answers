@@ -2,7 +2,7 @@
   "server":{
     "port": 3000
   },
-  "postgres": {
+  "mysql": {
     "host": "localhost",
     "user": "root",
     "port": 3307,

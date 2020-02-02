@@ -1,6 +1,3 @@
-import '../common/form.css';
-import './signup.css';
-
 /*
 const form = document.querySelector('.form'),
     username = document.querySelector('#username'),
