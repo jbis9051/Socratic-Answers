@@ -1,18 +1,29 @@
-<div class="profile-content">
-    <div class="profile-image-wrapper">
-        <img height="164" width="164" src="<%= user.profile_image %>">
-    </div>
-    <div class="profile-content-wrapper">
-        <h2 class="username"><%= user.username %></h2>
-        <div class="profile-bio">
-            <%- bio %>
+<form id="form" method="post">
+    <div class="profile-content">
+        <% errors.forEach(error => { %>
+            <span class="error"><%= error %></span>
+        <% }); %>
+        <div class="profile-image-wrapper">
+            <img height="164" width="164" src="<%= user.profile_image %>">
+            <span class="change-image-caption">Change Image</span>
+            <input id="fileInput" hidden type="file">
+            <input id="profileURL" name="profile_image" value="<%= user.profile_image %>" type="hidden">
+        </div>
+        <div class="profile-content-wrapper">
+            <input name="username" class="username" placeholder="Username" value="<%= user.username %>">
+            <textarea id="bioInput" name="bio" class="profile-bio edit"><%= user.bio %></textarea>
+            <hr>
+            <div id="bioRender"></div>
+        </div>
+        <div class="profile-meta-wrapper edit">
+            <ul>
+                <li><input name="location" placeholder="Location" value="<%= user.location %>"></li>
+                <li><input name="website" placeholder="Website" value="<%= user.website %>"></li>
+                <li><input name="github" placeholder="GitHub" value="<%= user.github %>"></li>
+            </ul>
         </div>
     </div>
-    <div class="profile-meta-wrapper">
-        <ul>
-            <% [user.location, user.website, user.github].filter(point => !!point).forEach(point => { %>
-                <li><%= point %></li>
-            <% }) %>
-        </ul>
-    </div>
-</div>
+    <input type="submit" value="Submit" class="btn">
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
+<script src="/js/users/profile_edit.js"></script>

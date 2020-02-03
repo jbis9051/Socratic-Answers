@@ -17,6 +17,7 @@ a:hover {
     margin: 30px auto 0;
     border-radius: 0.25rem;
     padding: 5px;
+    max-width: 1200px;
 }
 .main-content, .content-background {
     background: #2c2a35;

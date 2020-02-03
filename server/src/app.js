@@ -13,10 +13,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('./middleware/sites'));
 app.use(express.static(path.join(__dirname, '../node_modules/@socraticanswers/static/public')));
 
 app.locals.friendlyURLPath = friendlyURLPath;
-app.use(require('./routes/users/auth'));
+app.use(require('./middleware/auth'));
 app.use(require('./routes'));
 
 app.get('/', (req, res) => res.send('Hello World!'));

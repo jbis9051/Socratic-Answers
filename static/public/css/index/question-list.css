@@ -74,3 +74,9 @@
 .question-tag:hover {
     color: #4b93d7;
 }
+.solutions {
+    background: #33b631;
+}
+.solutions .question-metadata-label {
+    color: white;
+}

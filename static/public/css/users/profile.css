@@ -1,33 +1,86 @@
 .profile-content {
     display: flex;
+    align-items: flex-start;
 }
+
 .profile-content > div {
     margin: 20px;
 }
+
 .profile-image-wrapper {
+    position: relative;
     width: 20%;
-}
-.profile-image-wrapper {
     background: #43404e;
     padding: 9px;
     display: flex;
     justify-content: center;
-    align-items: center
+    align-items: center;
+    min-width: 164px;
 }
+
 .profile-image-wrapper img {
     width: 100%;
     height: auto;
     border: none;
 }
+
 .profile-content-wrapper {
     flex: 1;
 }
+
 .profile-meta-wrapper {
     width: 20%;
 }
+
 .username {
     margin: 0;
+    text-align: center;
 }
+
 .profile-bio {
     margin-top: 20px;
+}
+
+.change-image-caption {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    height: 33px;
+}
+
+input {
+    margin: 5px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 170px;
+}
+.btn {
+    max-width: 150px;
+}
+@media (min-width: 320px) and (max-width: 480px) {
+    .profile-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-image-wrapper {
+        width: 30%;
+    }
+
+    .profile-meta-wrapper {
+        width: 100%;
+        margin: 25px;
+    }
+
+    .profile-meta-wrapper ul {
+        padding: 0;
+        margin: 25px;
+    }
+}
+a:hover {
+    text-decoration: unset;
 }

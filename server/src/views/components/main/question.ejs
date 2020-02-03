@@ -1,8 +1,8 @@
 <div class="question">
     <div class="question-metadata">
-        <div>
-            <span class="question-score"><%= question.score %></span>
-            <span class="question-metadata-label">Score</span>
+        <div class="<%= question.solutions > 0 ? "solutions" : "" %>">
+            <span class="question-solutions"><%= question.solutions %></span>
+            <span class="question-metadata-label">Solutions</span>
         </div>
         <div>
             <span class="question-answers"><%= question.answers %></span>

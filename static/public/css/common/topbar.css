@@ -67,6 +67,9 @@
     font-size: 15px;
     margin: 7px;
 }
+.user-badge:hover {
+    text-decoration: none;
+}
 
 .user-badge:hover {
     background: #29282e;

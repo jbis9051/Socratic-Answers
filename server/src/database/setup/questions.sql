@@ -11,7 +11,7 @@ CREATE TABLE question
     deleted          BOOLEAN DEFAULT FALSE NOT NULL,
     created          TIMESTAMPTZ           NOT NULL DEFAULT NOW(),
     tag_string       VARCHAR(256)          NULL,
-    answered         BOOLEAN DEFAULT FALSE NOT NULL,
+    solutions        INTEGER DEFAULT 0     NOT NULL,
     last_modified    TIMESTAMPTZ           NOT NULL DEFAULT NOW(),
     CONSTRAINT question_sites_id_fk
         FOREIGN KEY (site_id) REFERENCES sites (id),

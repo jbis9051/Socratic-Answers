@@ -1,13 +1,13 @@
 <div class="top-bar">
     <div class="site-graphics">
-        <span>Sitename</span>
+        <span><%= site.name %></span>
     </div>
     <div class="right-stack">
         <% if(currentUser === null) { %>
             <a href="/users/signup" class="nav-button signup">Sign Up</a>
             <a href="/users/signin" class="nav-button signin">Sign In</a>
         <% } else  { %>
-            <a href="/users/profile" class="user-badge">
+            <a href="/users/<%= currentUser.id %>" class="user-badge">
                 <img src="<%= currentUser.profile_image %>">
                 <span class="username"><%= currentUser.username %></span>
             </a>

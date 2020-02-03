@@ -26,7 +26,7 @@ label {
     display: block;
 }
 
-input {
+input,textarea {
     font-size: 15px;
     width: 100%;
     outline: none;
@@ -37,7 +37,7 @@ input {
     border-radius: 0.25rem;
 }
 
-input:focus {
+input:focus, textarea:focus {
     outline: none;
     border: solid 1px #0b5e99;
 }
