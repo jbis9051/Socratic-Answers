@@ -7,6 +7,7 @@ const User = require('../../models/User');
 
 router.use(require('./signup'));
 router.use(require('./signin'));
+router.use(require('./profile'));
 
 router.get('/logout', async function (req, res, next) {
     if(!req.user){

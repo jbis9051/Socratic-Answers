@@ -12,8 +12,19 @@ class User {
             this.id = row["id"];
             this.email = row["email"];
             this.profile_image = row["profile_image"];
+            if(this.profile_image === null){
+                this.profile_image = "http://localhost:3000/images/users/placeholder.png";
+            }
             this.username = row["username"];
         }
+    }
+
+    async fillBioFields() {
+        const {row} = await conn.singleRow("SELECT bio, location,website,github FROM users WHERE id = $1", [this.id]);
+        this.bio = row.bio;
+        this.location = row.location;
+        this.website = row.website;
+        this.github = row.github;
     }
 
     /* getters */
@@ -21,6 +32,11 @@ class User {
     async getEmailConfirmed() {
         const {row} = await conn.singleRow("SELECT email_confirmed FROM users WHERE id = $1", [this.id]);
         return row.email_confirmed;
+    }
+
+    static async getUsername(id) {
+        const {row} = await conn.singleRow("SELECT username FROM users WHERE id = $1", [id]);
+        return row.username;
     }
 
     /* creation */
@@ -120,7 +136,7 @@ class User {
 
     static async signUp(username, email, password) {
         const hash = await bcrypt.hash(password, 10);
-        const {row} = await conn.singleRow("INSERT INTO users (username,password,email) VALUES ($1,$2,$3) RETURNING id as insertId", [username, hash, email]);
+        const {row} = await conn.singleRow("INSERT INTO users (username,password,email) VALUES ($1,$2,$3) RETURNING id AS insertId", [username, hash, email]);
         return await User.FromId(row.insertId);
     }
 
@@ -163,7 +179,7 @@ class User {
 
     /* other */
 
-    toSiteUser(){
+    toSiteUser() {
 
     }
 

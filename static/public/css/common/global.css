@@ -12,3 +12,12 @@ a {
 a:hover {
     color: #35a2d6;
 }
+.main-content {
+    width: 90%;
+    margin: 30px auto 0;
+    border-radius: 0.25rem;
+    padding: 5px;
+}
+.main-content, .content-background {
+    background: #2c2a35;
+}

@@ -1,0 +1,33 @@
+.profile-content {
+    display: flex;
+}
+.profile-content > div {
+    margin: 20px;
+}
+.profile-image-wrapper {
+    width: 20%;
+}
+.profile-image-wrapper {
+    background: #43404e;
+    padding: 9px;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+.profile-image-wrapper img {
+    width: 100%;
+    height: auto;
+    border: none;
+}
+.profile-content-wrapper {
+    flex: 1;
+}
+.profile-meta-wrapper {
+    width: 20%;
+}
+.username {
+    margin: 0;
+}
+.profile-bio {
+    margin-top: 20px;
+}

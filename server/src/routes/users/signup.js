@@ -9,7 +9,7 @@ const ValidateRegex = require('../../helpers/validation');
 const tokenizeResponse = require('../../helpers/tokenizeResponse');
 
 router.get("/signup", csrfProtection, function (req, res, next) {
-    res.render("users/signup", { errors: [], username: "", email: "", csrfToken: req.csrfToken()});
+    res.render("users/auth/signup", { errors: [], username: "", email: "", csrfToken: req.csrfToken()});
 });
 
 
@@ -40,7 +40,7 @@ router.post("/signup", csrfProtection, async function (req, res, next) {
     }
 
     if (errors.length !== 0) {
-        res.render("users/signup", {
+        res.render("users/auth/signup", {
 
             errors: errors,
             username: req.body.username,
@@ -53,10 +53,10 @@ router.post("/signup", csrfProtection, async function (req, res, next) {
     const user = await User.signUp(req.body.username, req.body.email, req.body.password);
     user.sendConfirmEmail(req.body.email)
         .then(_ => {
-            res.render('users/confirm-sent', {error: null});
+            res.render('users/auth/confirm-sent', {error: null});
         })
         .catch(err => {
-            res.render('users/confirm-sent', {error: err});
+            res.render('users/auth/confirm-sent', {error: err});
         });
 });
 

@@ -7,7 +7,7 @@ const tokenizeResponse = require('../../helpers/tokenizeResponse');
 const User = require('../../models/User');
 
 router.get('/signin', csrfProtection, function (req, res, next) {
-    res.render('users/signin', {
+    res.render('users/auth/signin', {
         errorMessage: null,
         redir: req.query.r || null,
         csrfToken: req.csrfToken()
@@ -16,7 +16,7 @@ router.get('/signin', csrfProtection, function (req, res, next) {
 
 router.post('/signin', csrfProtection, async function (req, res, next) {
     function error(message = "Username and Password don't match") {
-        res.render('users/signin', {
+        res.render('users/auth/signin', {
             errorMessage: message,
             redir: req.query.r || null,
             csrfToken: req.csrfToken()

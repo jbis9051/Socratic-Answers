@@ -15,8 +15,10 @@
     "csurf": "^1.11.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
+    "highlight.js": "^9.18.1",
     "javascript-time-ago": "^2.0.6",
     "mailgun-js": "^0.22.0",
+    "markdown-it": "^10.0.0",
     "morgan": "^1.9.1",
     "pg": "^7.17.1"
   }

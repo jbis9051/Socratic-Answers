@@ -24,12 +24,12 @@ router.get('/:id/:title', async function (req, res, next) {
         return;
     }
     const question = await Question.FromId(id);
-    if(req.params.title !== req.app.locals.friendlyURLPath(question.title)){
-        res.redirect(`/questions/${question.id}/${req.app.locals.friendlyURLPath(question.title)}`);
-        return;
-    }
     if (!question) {
         next();
+        return;
+    }
+    if(req.params.title !== req.app.locals.friendlyURLPath(question.title)){
+        res.redirect(`/questions/${question.id}/${req.app.locals.friendlyURLPath(question.title)}`);
         return;
     }
     res.send(await question.getContent());

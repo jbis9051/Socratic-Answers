@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/common/tabs.css">
+    <link rel="stylesheet" href="/css/users/profile.css">
+    <title><%= user.username %>'s Profile</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="main-content">
+    <div class="tabs">
+        <a class="tab <%= tab === "main" ? "selected" : "" %>"></a>
+        <% if(currentUser.id === user.id) { %>
+            <a class="tab <%= tab === "edit" ? "selected" : "" %>"></a>
+        <% } %>
+    </div>
+    <%
+    switch (tab) {
+        case "main": { %>
+           <%- include('./standard', {user: user, bio: bio}); %>
+          <% break;
+         }
+        case "edit": { %>
+          <%- include('./edit', {user: user, bio: bio}); %>
+        <% }
+    }
+    %>
+</div>
+</body>
+</html>

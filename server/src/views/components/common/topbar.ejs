@@ -3,13 +3,13 @@
         <span>Sitename</span>
     </div>
     <div class="right-stack">
-        <% if(user === null) { %>
+        <% if(currentUser === null) { %>
             <a href="/users/signup" class="nav-button signup">Sign Up</a>
             <a href="/users/signin" class="nav-button signin">Sign In</a>
         <% } else  { %>
             <a href="/users/profile" class="user-badge">
-                <img src="<%= user.profile_image %>">
-                <span class="username"><%= user.username %></span>
+                <img src="<%= currentUser.profile_image %>">
+                <span class="username"><%= currentUser.username %></span>
             </a>
         <% } %>
         <div id="topbarHamburger" class="topbar-hamburger fa fa-bars"></div>
@@ -20,7 +20,7 @@
             <span>Current Community</span>
             <a class="nav-list-item">Questions</a>
             <a class="nav-list-item">Meta</a>
-            <% if(user !== null) { %>
+            <% if(currentUser !== null) { %>
             <a href="/users/logout" class="nav-button">Logout</a>
             <% } %>
         </nav>
