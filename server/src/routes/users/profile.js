@@ -41,24 +41,36 @@ router.get('/:id/:username', async function (req, res, next) {
         return;
     }
     await user.fillBioFields();
-    res.render('users/profile/profile', {user: user, tab: "main", bio: markdown.render(user.bio)});
+    res.locals.user = user;
+    res.locals.tab = "main";
+    res.render('users/profile/profile');
 });
 
-router.get('/edit', requireUser, async function (req, res, next) {
-    await req.user.fillBioFields();
-
-    res.render('users/profile/profile', {user: req.user, tab: "edit", bio: markdown.render(req.user.bio), errors: []});
+router.get('/answers/:id', async function (req, res, next) {
+    const id = parseInt(req.params.id);
+    if (!id) {
+        next();
+        return;
+    }
+    const user = await User.FromId(id);
+    if (!user) {
+        next();
+        return;
+    }
+    const answers = await user.getAnswers(req.site.id);
+    const answersCount = await user.getAnswersCount(req.site.id);
+    res.render('users/profile/answers', {answers, answersCount, user, tab: "answers",sorting: "newest"});
 });
 
 router.post('/edit', async function (req, res, next) {
-    if (!["username", "bio", "profile_image", "location", "website", "github"].every(key => key in req.body)) {
+    if (![/*"username",*/ "bio", "profile_image", "location", "website", "github"].every(key => key in req.body)) {
         res.send("An error occurred.");
         return;
     }
     const errors = [];
-    if (!Validation.Username.test(req.body.username)) {
-        errors.push("Invalid Username");
-    }
+    /* if (!Validation.Username.test(req.body.username)) {
+         errors.push("Invalid Username");
+     }*/
     const github = url.parse(req.body.github);
     const website = url.parse(req.body.website);
 
@@ -69,20 +81,19 @@ router.post('/edit', async function (req, res, next) {
     if (req.body.website !== "" && !/^https?:/.test(website.protocol)) {
         errors.push("Website URL must be a valid URL");
     }
-    if (errors.length === 0) {
-        await req.user.updateBioFields(req.body.bio, req.body.location, req.body.website, req.body.github);
-        res.redirect(`/users/${req.user.id}/${req.app.locals.friendlyURLPath(req.user.username)}`);
-
-    } else {
-        await req.user.fillBioFields();
-        res.render('users/profile/profile', {
-            user: req.user,
-            tab: "edit",
-            bio: markdown.render(req.user.bio),
-            errors: errors
-        });
-
+    if (errors.length !== 0) {
+        req.errors = errors;
+        next();
+        return;
     }
+    await req.user.updateBioFields(req.body.bio, req.body.location, req.body.website, req.body.github);
+    res.redirect(`/users/${req.user.id}/${req.app.locals.friendlyURLPath(req.user.username)}`);
+});
+router.all('/edit', requireUser, async function (req, res, next) {
+    await req.user.fillBioFields();
+    res.locals.user = req.user;
+    res.locals.tab = "edit";
+    res.render('users/profile/edit', {errors: req.errors || []});
 });
 
 module.exports = router;

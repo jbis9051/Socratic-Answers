@@ -11,23 +11,29 @@
 <body>
 <%- include('../../components/common/topbar' ) %>
 <div class="main-content">
-    <div class="tabs">
-        <a class="tab <%= tab === "main" ? "selected" : "" %>"></a>
-        <% if(currentUser.id === user.id) { %>
-            <a class="tab <%= tab === "edit" ? "selected" : "" %>"></a>
-        <% } %>
+    <%- include('./components/tabs' ) %>
+
+    <div class="profile-content">
+        <div class="profile-top">
+            <div class="profile-image-wrapper">
+                <img height="164" width="164" src="<%= user.profile_image %>">
+                <h2 class="username"><%= user.username %></h2>
+            </div>
+            <div class="profile-meta-wrapper">
+                <ul>
+                    <% [user.location, user.website, user.github].filter(point => !!point).forEach(point => { %>
+                        <li><a target="_blank" href="<%= point %>"><%= point %></a></li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+        <div class="profile-content-wrapper">
+            <div class="profile-bio">
+                <%- user.renderedBio %>
+            </div>
+        </div>
     </div>
-    <%
-    switch (tab) {
-        case "main": { %>
-           <%- include('./standard', {user: user, bio: bio}); %>
-          <% break;
-         }
-        case "edit": { %>
-          <%- include('./edit', {user: user, bio: bio}); %>
-        <% }
-    }
-    %>
+
 </div>
 </body>
 </html>

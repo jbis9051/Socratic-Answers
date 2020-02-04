@@ -4,7 +4,12 @@ const crypto = require("crypto");
 const conn = require('../database/postges.js').pool;
 const mailgun = require('../helpers/mailgun.js');
 
+const Answer = require('../models/Answer');
+const Question = require('../models/Question');
+
+
 const TimeHelper = require('../helpers/time');
+const markdown = require('../helpers/markdown');
 
 class User {
     constructor(row) {
@@ -13,7 +18,7 @@ class User {
             this.email = row["email"];
             this.profile_image = row["profile_image"];
             if (this.profile_image === null) {
-                this.profile_image = "http://localhost:3000/images/users/placeholder.png";
+                this.profile_image = "http://socraticanswers.com/images/users/placeholder.png";
             }
             this.username = row["username"];
         }
@@ -25,9 +30,10 @@ class User {
         this.location = row.location;
         this.website = row.website;
         this.github = row.github;
+        this.renderedBio = markdown.render(this.bio);
     }
 
-    async updateBioFields(bio,location, website, github) {
+    async updateBioFields(bio, location, website, github) {
         bio = bio || null;
         location = location || null;
         website = website || null;
@@ -187,13 +193,25 @@ class User {
 
     /* profile changes */
 
-
     /* other */
 
     toSiteUser() {
 
     }
 
+    /* content */
+    async getAnswers(siteid, page = 1, perpage = 30) {
+        const {rows: answers} = await conn.multiRow("SELECT * FROM answers WHERE creator_id = $3 AND site_id = $4 LIMIT $1 OFFSET  $2", [perpage, (page - 1) * perpage, this.id, siteid]);
+        return answers.map(answer => {
+            const answer2 = new Answer(answer.id);
+            answer2._setAttributes(answer);
+            return answer2;
+        });
+    }
+    async getAnswersCount(siteid) {
+        const answers = await conn.singleRow("SELECT COUNT(*) as count FROM answers WHERE site_id = $1",[siteid] );
+        return  answers.count;
+    }
 }
 
 module.exports = User;

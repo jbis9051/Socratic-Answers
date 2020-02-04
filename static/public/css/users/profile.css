@@ -1,21 +1,23 @@
 .profile-content {
     display: flex;
     align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
 }
 
-.profile-content > div {
-    margin: 20px;
+.profile-top {
+    width: 100%;
+    display: flex;
 }
-
 .profile-image-wrapper {
     position: relative;
-    width: 20%;
     background: #43404e;
     padding: 9px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-width: 164px;
+    flex-direction: column;
 }
 
 .profile-image-wrapper img {
@@ -23,13 +25,16 @@
     height: auto;
     border: none;
 }
-
+.profile-meta-wrapper {
+    padding-left: 32px;
+}
 .profile-content-wrapper {
     flex: 1;
+    width: 100%;
 }
 
-.profile-meta-wrapper {
-    width: 20%;
+.profile-meta-wrapper ul {
+    padding: 0;
 }
 
 .username {
@@ -62,13 +67,13 @@ textarea {
     max-width: 150px;
 }
 @media (min-width: 320px) and (max-width: 480px) {
-    .profile-content {
+    .profile-top {
         flex-direction: column;
         align-items: center;
     }
 
     .profile-image-wrapper {
-        width: 30%;
+        width: 75%;
     }
 
     .profile-meta-wrapper {
@@ -81,6 +86,7 @@ textarea {
         margin: 25px;
     }
 }
-a:hover {
-    text-decoration: unset;
+
+.profile-content input {
+    width: calc(100% - 5px);
 }

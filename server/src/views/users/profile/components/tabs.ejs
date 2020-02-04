@@ -1,0 +1,7 @@
+<div class="tabs">
+    <a href="/users/<%= user.id %>" class="tab <%= tab === "main" ? "active" : "" %>">Profile</a>
+    <a href="/users/answers/<%= user.id %>" class="tab <%= tab === "answers" ? "active" : "" %>">Answers</a>
+    <% if(currentUser && currentUser.id === user.id) { %>
+        <a href="/users/edit" class="tab <%= tab === "edit" ? "active" : "" %>">Edit</a>
+    <% } %>
+</div>
