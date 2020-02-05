@@ -57,9 +57,13 @@ router.get('/answers/:id', async function (req, res, next) {
         next();
         return;
     }
-    const answers = await user.getAnswers(req.site.id);
-    const answersCount = await user.getAnswersCount(req.site.id);
-    res.render('users/profile/answers', {answers, answersCount, user, tab: "answers",sorting: "newest"});
+    let sorting = req.query.sort || "newest";
+    let page = req.query.page !== undefined ? parseInt(req.query.page) : 1;
+
+    const answers = await user.getAnswers(req.site.id, page, sorting);
+    const answersCount = parseInt(await user.getAnswersCount(req.site.id));
+
+    res.render('users/profile/answers', {answers, answersCount, user, tab: "answers", sorting: sorting});
 });
 
 router.post('/edit', async function (req, res, next) {

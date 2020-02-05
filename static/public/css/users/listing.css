@@ -1,0 +1,7 @@
+.listing-content {
+    padding: 5px 20px;
+}
+.listing-content h1 {
+    padding-bottom: 5px;
+    border-bottom: #a0a0a0 1px solid;
+}

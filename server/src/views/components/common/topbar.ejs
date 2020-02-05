@@ -1,7 +1,9 @@
 <div class="top-bar">
-    <div class="site-graphics">
-        <span><%= site.name %></span>
-    </div>
+    <a href="/">
+        <div class="site-graphics">
+            <span><%= site.name %> Answers</span>
+        </div>
+    </a>
     <div class="right-stack">
         <% if(currentUser === null) { %>
             <a href="/users/signup" class="nav-button signup">Sign Up</a>
@@ -17,12 +19,17 @@
 
     <div id="topbarExpand">
         <nav class="nav-list">
-            <span>Current Community</span>
-            <a class="nav-list-item">Questions</a>
-            <a class="nav-list-item">Meta</a>
-            <% if(currentUser !== null) { %>
-            <a href="/users/logout" class="nav-button">Logout</a>
-            <% } %>
+            <span class="nav-list--title"><%= site.name %> Answers</span>
+            <div class="nav-list--items">
+                <a href="/questions" class="nav-list-item">Questions</a>
+                <% if(site.meta_site) { %>
+                    <a href="https://<%= site.meta_site.subdomain %>.socraticanswers.com" class="nav-list-item">Meta</a>
+                <% } %>
+                <% if(currentUser !== null) { %>
+                    <span class="nav-list--divider"></span>
+                    <a href="/users/logout" class="nav-list-item nav--logout-button">Logout</a>
+                <% } %>
+            </div>
         </nav>
     </div>
 </div>

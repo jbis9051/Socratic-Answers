@@ -20,13 +20,13 @@
     color: #a3a3a3;
 }
 
-label {
+form label {
     margin-top: 10px;
     font-size: 15px;
     display: block;
 }
 
-input,textarea {
+form input, textarea {
     font-size: 15px;
     width: 100%;
     outline: none;
@@ -37,7 +37,7 @@ input,textarea {
     border-radius: 0.25rem;
 }
 
-input:focus, textarea:focus {
+form input:focus, form textarea:focus {
     outline: none;
     border: solid 1px #0b5e99;
 }
@@ -48,12 +48,12 @@ input:focus, textarea:focus {
     padding: 3px 25px;
 }
 
-a {
+form a {
     text-decoration: none;
     color: unset;
 }
 
-a:hover {
+form a:hover {
     text-decoration: underline;
 }
 

@@ -8,5 +8,6 @@ module.exports = async function tokenizeResponse(user, res) {
         path: '/',
         secure: false,
         sameSite: 'Strict',
+        domain: '.socraticanswers.com'
     });
 };

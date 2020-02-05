@@ -21,3 +21,5 @@ CREATE TABLE answers
         FOREIGN KEY (question_id) REFERENCES question (id)
             ON UPDATE CASCADE
 );
+
+CREATE INDEX ON answers (score DESC);

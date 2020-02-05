@@ -4,24 +4,10 @@ imageWrapper.addEventListener("click", _ => {
 
 });
 
-const md = window.markdownit();
 const bioInput = document.querySelector('#bioInput');
 const bioRender = document.querySelector('#bioRender');
 
-
-function render() {
-    bioRender.innerHTML = md.render(bioInput.value);
-    document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightBlock(block);
-    });
-}
-
-render();
-
-bioInput.addEventListener("keyup", _ => {
-    render();
-
-});
+createEditor(bioInput, bioRender);
 
 const form = document.querySelector('#form');
 

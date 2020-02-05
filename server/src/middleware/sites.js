@@ -8,6 +8,12 @@ Site.getAllSites().then(allsites => {
     allsites.forEach(site => {
        sites[site.subdomain] = site;
     });
+    Object.values(sites).forEach(site => {
+        const meta_site = Object.values(sites).find(possible_meta => possible_meta.is_meta && possible_meta.parent_site === site.id);
+        if(meta_site){
+            site.meta_site = meta_site;
+        }
+    })
 });
 
 

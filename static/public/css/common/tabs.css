@@ -1,7 +1,7 @@
 .tabs {
     display: flex;
     border-bottom: 2px solid #484848;
-    color: rgba(149, 149, 149, 0.87);
+    margin-bottom: 10px;
 }
 
 .tabs .tab {
@@ -15,6 +15,7 @@
     border-bottom: none;
     margin-left: 10px;
     position: relative;
+    color: rgba(149, 149, 149, 0.87);
 }
 
 .tab.active, .tab:hover {

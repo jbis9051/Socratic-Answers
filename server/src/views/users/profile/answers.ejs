@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <%- include('../../components/common/standard-head') %>
     <link rel="stylesheet" href="/css/common/tabs.css">
-    <link rel="stylesheet" href="/css/users/form.css">
-    <link rel="stylesheet" href="/css/users/profile.css">
+    <link rel="stylesheet" href="/css/users/listing.css">
     <title><%= user.username %>'s Profile</title>
 </head>
 <body>
@@ -13,17 +12,21 @@
 <div class="main-content">
     <%- include('./components/tabs' ) %>
     <div class="tabs">
-        <a href="/users/<%= user.id %>/posts/answers?sort=newest" class="tab <%= sorting === "newest" ? "active" : "" %>">Newest</a>
-        <a href="/users/<%= user.id %>/posts/answers?sort=links" class="tab <%= sorting === "links" ? "active" : "" %>">Links</a>
-        <a href="/users/<%= user.id %>/posts/answers?sort=votes" class="tab <%= sorting === "votes" ? "active" : "" %>">Votes</a>
+        <a href="/users/answers/<%= user.id %>?sort=newest" class="tab <%= sorting === "newest" ? "active" : "" %>">Newest</a>
+        <a href="/users/answers/<%= user.id %>?sort=links"
+           class="tab <%= sorting === "links" ? "active" : "" %>">Links</a>
+        <a href="/users/answers/<%= user.id %>?sort=votes" class="tab <%= sorting === "votes" ? "active" : "" %>">Votes</a>
     </div>
-    <% if(answersCount === 0) { %>
-        <span>This user doesn't have any answers. Such a shame.</span>
-    <% } else { %>
-        <% answers.forEach(answer => { %>
-            <%- include('../components/listinga/answer', {answer: answer }) %>
-        <% }) %>
-    <% } %>
+    <div class="listing-content">
+        <h1><%= user.username %>'s Answers</h1>
+        <% if(answersCount === 0) { %>
+            <span>This user doesn't have any answers.</span>
+        <% } else { %>
+            <% answers.forEach(answer => { %>
+                <%- include('../components/listinga/answer', {answer: answer }) %>
+            <% }) %>
+        <% } %>
+    </div>
 </div>
 </body>
 </html>

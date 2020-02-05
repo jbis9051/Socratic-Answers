@@ -200,8 +200,12 @@ class User {
     }
 
     /* content */
-    async getAnswers(siteid, page = 1, perpage = 30) {
-        const {rows: answers} = await conn.multiRow("SELECT * FROM answers WHERE creator_id = $3 AND site_id = $4 LIMIT $1 OFFSET  $2", [perpage, (page - 1) * perpage, this.id, siteid]);
+    async getAnswers(siteid, page = 1, orderby, perpage = 30) {
+        const orderbyWhite = {
+            "newest": "created",
+            "links": ""
+        };
+        const {rows: answers} = await conn.multiRow("SELECT * FROM answers WHERE creator_id = $3 AND site_id = $4 ORDER BY $5 DESC LIMIT $1 OFFSET  $2", [perpage, (page - 1) * perpage, this.id, siteid, orderbyWhite[orderby]]);
         return answers.map(answer => {
             const answer2 = new Answer(answer.id);
             answer2._setAttributes(answer);
@@ -209,8 +213,8 @@ class User {
         });
     }
     async getAnswersCount(siteid) {
-        const answers = await conn.singleRow("SELECT COUNT(*) as count FROM answers WHERE site_id = $1",[siteid] );
-        return  answers.count;
+        const {row} = await conn.singleRow("SELECT COUNT(*) as count FROM answers WHERE site_id = $1 AND creator_id = $2",[siteid, this.id] );
+        return  row.count;
     }
 }
 
