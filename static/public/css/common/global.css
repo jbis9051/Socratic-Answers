@@ -1,5 +1,6 @@
 body {
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+   /* font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;*/
+    font-family: 'Noto Sans', sans-serif;
     padding-top: 60px;
     background: #16151b;
     color: #e2e2e2;
@@ -21,4 +22,13 @@ a:hover {
 }
 .main-content, .content-background {
     background: #2c2a35;
+}
+ input,textarea {
+     outline: unset;
+     border: unset;
+ }
+
+.hljs {
+    background: #373737;
+    border-radius: 0.25rem;
 }

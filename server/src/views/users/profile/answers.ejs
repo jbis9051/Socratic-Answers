@@ -23,7 +23,7 @@
             <span>This user doesn't have any answers.</span>
         <% } else { %>
             <% answers.forEach(answer => { %>
-                <%- include('../components/listinga/answer', {answer: answer }) %>
+                <%- include('../../components/listing/answer', {answer: answer }) %>
             <% }) %>
         <% } %>
     </div>

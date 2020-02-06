@@ -6,6 +6,8 @@ const url = require('url');
 const User = require('../../models/User');
 
 const requireUser = require('../../middleware/requireUser');
+const csrfProtection = require('../../middleware/csurf');
+
 const Validation = require('../../helpers/validation');
 const urlHasDomain = require('../../helpers/urlHasDomain');
 
@@ -66,7 +68,7 @@ router.get('/answers/:id', async function (req, res, next) {
     res.render('users/profile/answers', {answers, answersCount, user, tab: "answers", sorting: sorting});
 });
 
-router.post('/edit', async function (req, res, next) {
+router.post('/edit', csrfProtection, async function (req, res, next) {
     if (![/*"username",*/ "bio", "profile_image", "location", "website", "github"].every(key => key in req.body)) {
         res.send("An error occurred.");
         return;
@@ -93,11 +95,28 @@ router.post('/edit', async function (req, res, next) {
     await req.user.updateBioFields(req.body.bio, req.body.location, req.body.website, req.body.github);
     res.redirect(`/users/${req.user.id}/${req.app.locals.friendlyURLPath(req.user.username)}`);
 });
-router.all('/edit', requireUser, async function (req, res, next) {
+router.all('/edit', requireUser, csrfProtection, async function (req, res, next) {
     await req.user.fillBioFields();
     res.locals.user = req.user;
     res.locals.tab = "edit";
-    res.render('users/profile/edit', {errors: req.errors || []});
+    res.render('users/profile/edit', {errors: req.errors || [], csrfToken: req.csrfToken()});
+});
+
+router.get('/questions', async function (req, res, next) {
+    let sorting = req.query.sort || "newest";
+    let page = req.query.page !== undefined ? parseInt(req.query.page) : 1;
+
+    const questions = await req.user.getQuestions(req.site.id, page, sorting);
+    const questionCount = parseInt(await req.user.getQuestionCount(req.site.id));
+
+    res.render('users/profile/questions', {
+        questions,
+        questionCount,
+        user: req.user,
+        tab: "questions",
+        sorting: sorting
+    });
+
 });
 
 module.exports = router;

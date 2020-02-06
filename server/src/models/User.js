@@ -205,6 +205,9 @@ class User {
             "newest": "created",
             "links": ""
         };
+        if(!orderbyWhite.hasOwnProperty(orderby)){
+            return [];
+        }
         const {rows: answers} = await conn.multiRow("SELECT * FROM answers WHERE creator_id = $3 AND site_id = $4 ORDER BY $5 DESC LIMIT $1 OFFSET  $2", [perpage, (page - 1) * perpage, this.id, siteid, orderbyWhite[orderby]]);
         return answers.map(answer => {
             const answer2 = new Answer(answer.id);
@@ -214,6 +217,25 @@ class User {
     }
     async getAnswersCount(siteid) {
         const {row} = await conn.singleRow("SELECT COUNT(*) as count FROM answers WHERE site_id = $1 AND creator_id = $2",[siteid, this.id] );
+        return  row.count;
+    }
+    async getQuestions(siteid, page = 1, orderby, perpage = 30) {
+        const orderbyWhite = {
+            "newest": "created",
+            "links": ""
+        };
+        if(!orderbyWhite.hasOwnProperty(orderby)){
+            return [];
+        }
+        const {rows: questions} = await conn.multiRow(`SELECT * FROM question WHERE creator_id = $3 AND site_id = $4 ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $1 OFFSET  $2`, [perpage, (page - 1) * perpage, this.id, siteid]);
+        return questions.map(question => {
+            const question2 = new Question(question.id);
+            question2._setAttributes(question);
+            return question2;
+        });
+    }
+    async getQuestionCount(siteid) {
+        const {row} = await conn.singleRow("SELECT COUNT(*) as count FROM question WHERE site_id = $1 AND creator_id = $2",[siteid, this.id] );
         return  row.count;
     }
 }

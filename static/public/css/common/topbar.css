@@ -33,18 +33,21 @@
     border: none;
 }
 
+/*
 .nav-button:hover, .btn:hover {
     color: #d2d2d2;
     background: #094c7a;
 }
+*/
 
-.nav-button {
+.nav-button, .btn {
     color: white;
     background: #ed9900;
     margin: 5px;
+    border-radius: 0.25rem;
 }
 
-.nav-button:hover {
+.nav-button:hover, .btn:hover {
     color: #d2d2d2;
     background: #975e00;
 }
@@ -64,6 +67,7 @@
     font-size: 15px;
     margin: 7px;
 }
+
 .user-badge:hover {
     text-decoration: none;
 }
@@ -88,6 +92,7 @@
     width: 100%;
     max-width: 300px;
 }
+
 #topbarExpand.active {
     display: block;
 }
@@ -95,19 +100,22 @@
 .nav-list {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 2px rgba(6,7,6,0.4);
+    box-shadow: 0 2px 2px rgba(6, 7, 6, 0.4);
 }
+
 .nav-list--title {
     display: block;
-    font-weight: 600;
+    font-weight: 700;
     background: #464451;
     padding-left: 5px;
     color: #efefef;
     font-size: 13px;
 }
+
 .nav-list--items {
 
 }
+
 .nav-list-item {
     display: block;
     width: 100%;
@@ -115,18 +123,22 @@
     color: #0e9aef;
     font-size: 15px;
 }
+
 .nav-list--divider {
     display: block;
     width: 100%;
     height: 1px;
     background: #efefef;
 }
+
 .nav--logout-button {
     color: #714f00;
 }
+
 .nav--logout-button:hover {
     color: #d28700;
 }
+
 .nav-list-item:hover {
     text-decoration: none;
     background: #232127;
@@ -136,8 +148,19 @@
     padding: 5px 10px;
     color: #dbdbdb;
 }
+
 .site-graphics span:hover {
     text-decoration: none;
+}
+
+.nav-button ,.ask-question {
+    background: #0e9aef;
+    border-radius: 0.25rem;
+    padding: 8px;
+    font-size: 13px;
+}
+.nav-button:hover,.ask-question:hover {
+    background: #0b5e99;
 }
 
 /*

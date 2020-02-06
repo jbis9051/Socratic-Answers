@@ -71,6 +71,11 @@ class Question {
             return question;
         });
     }
+
+    static async create(title, body, tags, siteid, creator){
+        const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tags.map(tag => '<' + tag + '>').join("")]);
+        return await Question.FromId(row.insertid);
+    }
 }
 
 module.exports = Question;

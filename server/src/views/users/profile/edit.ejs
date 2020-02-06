@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/common/tabs.css">
     <link rel="stylesheet" href="/css/users/form.css">
     <link rel="stylesheet" href="/css/users/profile.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
     <title><%= user.username %>'s Profile</title>
 </head>
 <body>
@@ -41,6 +42,7 @@
                 <div id="bioRender"></div>
             </div>
         </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <input type="submit" value="Submit" class="btn">
     </form>
 
@@ -49,6 +51,5 @@
 </html>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
 <script src="/js/markdown-editor.js"></script>
 <script src="/js/users/profile_edit.js"></script>

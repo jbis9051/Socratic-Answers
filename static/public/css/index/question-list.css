@@ -69,6 +69,9 @@
     background-color: #333652;
     white-space: nowrap;
     color: #4eb8ff;
+    margin-right: 5px;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .question-tag:hover {
@@ -79,4 +82,7 @@
 }
 .solutions .question-metadata-label {
     color: white;
+}
+.question--tags-input {
+    margin-top: 10px;
 }
