@@ -1,6 +1,10 @@
 const conn = require('../database/postges.js').pool;
 const TimeAgo = require('javascript-time-ago');
 
+
+const markdown = require('../helpers/markdown');
+
+
 TimeAgo.addLocale(require('javascript-time-ago/locale/en'));
 
 const timeAgo = new TimeAgo('en-US');
@@ -25,9 +29,10 @@ class Answer {
     }
 
 
-    async getContent() {
+    async fillContent() {
         const {row} = await conn.singleRow('SELECT content FROM answers WHERE id = $1', [this.id]);
-        return row.content;
+        this.content = row.content;
+        this.renderedContent = markdown.render(this.content)
     }
 
     getCreatedFriendlyTimeAgo() {
@@ -43,16 +48,9 @@ class Answer {
             id: obj.creator_id,
             username: obj.creator_username,
         };
-        this.is_solution = obj.is_solutionl
         this.last_modified = obj.last_modified;
-        this.solutions = obj.solutions;
-        this.score = obj.score;
+        this.initial_question_id = obj.initial_question_id;
         this.created = obj.created;
-        if (obj.hasOwnProperty("taglist")) {
-            this.taglist = obj.taglist;
-        } else {
-            this.taglist = obj.tag_string ? Array.from(obj.tag_string.matchAll(/<([^ >]+)>/g)).map(arr => arr[1]) : [];
-        }
     }
 
     static async getAnswers(siteid, limit = 20, offset = 0) {
@@ -62,6 +60,29 @@ class Answer {
             answer._setAttributes(row);
             return answer;
         });
+    }
+
+    static async create(body, site, question, creator) {
+        const {row} = await conn.singleRow("INSERT INTO answers (content, site_id, initial_question_id, creator_username, creator_id) VALUES ($1,$2,$3,$4,$5) RETURNING id AS insertid", [body, site, question, creator.username, creator.id]);
+        await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [question, row.insertid]);
+    }
+
+    async getQaId(quesitonid){
+        const {row} = await conn.singleRow(`SELECT id
+                                            FROM questions_join_answers
+                                            WHERE question_id = $1
+                                              AND answer_id = $2`, [quesitonid, this.id]);
+        return row.id;
+    }
+
+    async getVotes(qaId){
+        const {positives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId])
+        const {negatives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId])
+        return {
+            positives: positives.total,
+            negatives: negatives.total,
+            net: positives.total - negatives.total
+        }
     }
 }
 

@@ -21,6 +21,7 @@ class User {
                 this.profile_image = "http://socraticanswers.com/images/users/placeholder.png";
             }
             this.username = row["username"];
+            this.created = row.created;
         }
     }
 
@@ -205,7 +206,7 @@ class User {
             "newest": "created",
             "links": ""
         };
-        if(!orderbyWhite.hasOwnProperty(orderby)){
+        if (!orderbyWhite.hasOwnProperty(orderby)) {
             return [];
         }
         const {rows: answers} = await conn.multiRow("SELECT * FROM answers WHERE creator_id = $3 AND site_id = $4 ORDER BY $5 DESC LIMIT $1 OFFSET  $2", [perpage, (page - 1) * perpage, this.id, siteid, orderbyWhite[orderby]]);
@@ -215,16 +216,18 @@ class User {
             return answer2;
         });
     }
+
     async getAnswersCount(siteid) {
-        const {row} = await conn.singleRow("SELECT COUNT(*) as count FROM answers WHERE site_id = $1 AND creator_id = $2",[siteid, this.id] );
-        return  row.count;
+        const {row} = await conn.singleRow("SELECT COUNT(*) AS count FROM answers WHERE site_id = $1 AND creator_id = $2", [siteid, this.id]);
+        return row.count;
     }
+
     async getQuestions(siteid, page = 1, orderby, perpage = 30) {
         const orderbyWhite = {
             "newest": "created",
             "links": ""
         };
-        if(!orderbyWhite.hasOwnProperty(orderby)){
+        if (!orderbyWhite.hasOwnProperty(orderby)) {
             return [];
         }
         const {rows: questions} = await conn.multiRow(`SELECT * FROM question WHERE creator_id = $3 AND site_id = $4 ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $1 OFFSET  $2`, [perpage, (page - 1) * perpage, this.id, siteid]);
@@ -234,9 +237,19 @@ class User {
             return question2;
         });
     }
+
     async getQuestionCount(siteid) {
-        const {row} = await conn.singleRow("SELECT COUNT(*) as count FROM question WHERE site_id = $1 AND creator_id = $2",[siteid, this.id] );
-        return  row.count;
+        const {row} = await conn.singleRow("SELECT COUNT(*) AS count FROM question WHERE site_id = $1 AND creator_id = $2", [siteid, this.id]);
+        return row.count;
+    }
+
+    async vote(qaId, upvote) {
+        await this.removeVote(qaId);
+        await conn.query("INSERT INTO votes (qa_id, user_id, upvote)  VALUES ($1, $2, $3)", [qaId, this.id, upvote]);
+    }
+
+    async removeVote(qaId) {
+        await conn.query("DELETE FROM votes WHERE qa_id = $1 AND user_id = $2", [qaId, this.id]);
     }
 }
 

@@ -24,7 +24,6 @@ app.use(require('./routes'));
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use(function(req, res, next) {
-    next(404);
     res.render('404');
 });
 

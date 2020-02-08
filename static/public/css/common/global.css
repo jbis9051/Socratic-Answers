@@ -15,10 +15,10 @@ a:hover {
 }
 .main-content {
     width: 90%;
-    margin: 30px auto 0;
     border-radius: 0.25rem;
     padding: 5px;
     max-width: 1200px;
+    margin: 30px auto 20px;
 }
 .main-content, .content-background {
     background: #2c2a35;
@@ -31,4 +31,7 @@ a:hover {
 .hljs {
     background: #373737;
     border-radius: 0.25rem;
+}
+h1 {
+    line-height: 40px;
 }

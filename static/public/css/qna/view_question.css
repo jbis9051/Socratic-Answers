@@ -1,0 +1,84 @@
+.main-content {
+    padding: 20px;
+}
+.question {
+    padding-bottom: 10px;
+    border-bottom: 2px solid gray;
+}
+.question--title {
+    margin: 5px 0;
+}
+.question--date, .answer--date {
+    display: block;
+    font-size: 14px;
+    color: #ababab;
+    padding-bottom: 5px;
+}
+.question--date {
+    border-bottom: 1px solid gray;
+}
+.post--operations a {
+    color: #b3b3b3;
+    font-size: 13px;
+    font-weight: 700;
+}
+.post--operations a:hover {
+    color: #bfbfbf;
+    font-size: 13px;
+}
+
+.answer-amount {
+    display: block;
+    width: 90%;
+    margin: 20px auto 0;
+    border-bottom: 1px solid #b0b0b0;
+}
+.answers-wrapper {
+    margin-top: 10px;
+}
+
+.add-answer-input {
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    background: #fcfcfc;
+    border: solid 1px rgba(221, 221, 221, 0.98);
+    box-sizing: border-box;
+    border-radius: 0.25rem;
+    height: 200px;
+    padding: 10px 5px 5px;
+}
+.answer {
+    border-bottom: 1px solid #b0b0b0;
+}
+.answer:last-child {
+    border: none;
+}
+.author {
+    color: #ababab;
+    font-size: 12px;
+}
+.answer--split {
+    display: flex;
+    margin-bottom: 30px;
+}
+.answer--voting {
+    flex-basis: 61px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+.answer--voting .score {
+    text-align: center;
+    font-size: 22px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.answer--voting svg {
+    height: 20px;
+    margin: 5px;
+    color: #0b5e99;
+}
+.answers--body {
+    flex: 1;
+}

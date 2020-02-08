@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/md.css">
+    <link rel="stylesheet" href="/css/qna/view_question.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
+    <script src="/js/markdown-editor.js"></script>
+    <title><%= question.title %></title>
+</head>
+<body>
+<%- include('../components/common/topbar' ) %>
+<div class="main-content question-wrapper">
+    <div class="question">
+        <h1 class="question--title"><%= question.title %></h1>
+        <span class="question--date"><%= question.getCreatedFriendlyTimeAgo() %> (<%= question.created.toISOString() %>)</span>
+        <div class="question--body">
+            <%- question.renderedContent %>
+        </div>
+        <div class="post--operations">
+            <a class="post--operation" href="/questions/edit/<%= question.id %>">edit</a> /
+            <a class="post--operation" href="/questions/flag/<%= question.id %>">flag</a> /
+            <a class="post--operation" href="/questions/<%= question.id %>">share</a>
+        </div>
+        <span class="author">Authored by <a
+                    href="/users/<%= question.creator.id %>/<%= question.creator.id %>"><%= question.creator.username %></a></span>
+    </div>
+</div>
+<span class="section-label answer-amount"><%= answers.length %> Answers</span>
+<div class="answers-wrapper">
+    <% answers.forEach(answer => { %>
+        <div class="main-content answer">
+            <div class="answer--split">
+                <div class="answer--voting" data-answer-id="<%= answer.id %>">
+                    <svg class="upvote" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59" style="fill:#999"/>
+                    </svg>
+                    <span class="score">0</span>
+                    <svg class="downvote" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon points="32 0 16 23.59 0 0 32 0" style="fill: #999"/>
+                    </svg>
+                </div>
+                <div class="answers--body">
+                    <%- answer.renderedContent %>
+                </div>
+            </div>
+            <span class="answer--date"><%= question.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+            <div class="post--operations">
+                <% if(answer.initial_question_id === null) { %>
+                    <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
+                <% } else if(answer.initial_question_id !== question.id){ %>
+                    <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
+                    /
+                <% } %>
+                <a class="post--operation" href="/answers/links/<%= answer.id %>">links</a> /
+                <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
+                <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
+                <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
+            </div>
+            <span class="author">Authored by <a
+                        href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
+        </div>
+    <% }) %>
+</div>
+<div class="main-content add-answers">
+    <form action="/answers/create" method="post">
+        <span class="section-label">Your Answer</span>
+        <textarea class="add-answer-input" id="answer-input" name="body"></textarea>
+        <div class="answer-preview" id="answer-preview"></div>
+        <input type="hidden" name="_question" value="<%= question.id %>">
+        <input type="submit" class="btn" value="Add Answer">
+    </form>
+</div>
+<script>
+    const questionid = <%= question.id %>;
+</script>
+<script src="/js/qna/view_question.js"></script>
+</body>
+</html>

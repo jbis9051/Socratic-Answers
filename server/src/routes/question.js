@@ -7,7 +7,7 @@ const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
 
 router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
-    res.render('ask', {csrfToken: req.csrfToken(), errors: [], body: "", title: "", tags: ""});
+    res.render('qna/ask', {csrfToken: req.csrfToken(), errors: [], body: "", title: "", tags: ""});
 });
 
 router.post('/ask', requireUser, csrfToken, async function (req, res, next) {
@@ -24,7 +24,7 @@ router.post('/ask', requireUser, csrfToken, async function (req, res, next) {
         errors.push("Please use less tags.");
     }
     if (errors.length !== 0) {
-        res.render('ask', {
+        res.render('qna/ask', {
             csrfToken: req.csrfToken(),
             errors: errors,
             body: req.body.body,
@@ -66,7 +66,10 @@ router.get('/:id/:title', async function (req, res, next) {
         res.redirect(`/questions/${question.id}/${req.app.locals.friendlyURLPath(question.title)}`);
         return;
     }
-    res.send(await question.getContent());
+    await question.fillContent();
+    const answers = await question.getAnswers(req.site.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
+    await Promise.all(answers.map(answer => answer.fillContent()));
+    res.render('qna/view_question', {question, answers});
 });
 
 module.exports = router;

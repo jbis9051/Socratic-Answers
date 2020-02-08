@@ -1,6 +1,9 @@
 const conn = require('../database/postges.js').pool;
 const TimeAgo = require('javascript-time-ago');
 
+const Answer = require('../models/Answer');
+const markdown = require('../helpers/markdown');
+
 TimeAgo.addLocale(require('javascript-time-ago/locale/en'));
 
 const timeAgo = new TimeAgo('en-US');
@@ -32,9 +35,10 @@ class Question {
         return row.title;
     }
 
-    async getContent() {
+    async fillContent() {
         const {row} = await conn.singleRow('SELECT content FROM question WHERE id = $1', [this.id]);
-        return row.content;
+        this.content =  row.content;
+        this.renderedContent = markdown.render(this.content)
     }
 
     getCreatedFriendlyTimeAgo() {
@@ -69,6 +73,25 @@ class Question {
             const question = new Question(row.id);
             question._setAttributes(row);
             return question;
+        });
+    }
+
+    async getAnswers(siteid, page = 1, orderby, perpage = 30) {
+        const orderbyWhite = {
+            "newest": "answers.created",
+            "links": ""
+        };
+        if (!orderbyWhite.hasOwnProperty(orderby)) {
+            return [];
+        }
+        const {rows: answers} = await conn.multiRow(`SELECT * FROM questions_join_answers INNER JOIN answers ON questions_join_answers.answer_id = answers.id WHERE questions_join_answers.question_id = $1 AND deleted = FALSE ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $2 OFFSET $3`, [this.id, perpage, (page - 1) * perpage]);
+        return answers.map(answer => {
+            const answer2 = new Answer(answer.id);
+            answer2._setAttributes(answer);
+            if(answer.answer_is_solution){
+                answer2.is_solution = true;
+            }
+            return answer2;
         });
     }
 

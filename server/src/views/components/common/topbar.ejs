@@ -23,6 +23,9 @@
             <span class="nav-list--title"><%= site.name %> Answers</span>
             <div class="nav-list--items">
                 <a href="/questions" class="nav-list-item">Questions</a>
+                <% if(site.parent_site) { %>
+                    <a href="https://<%= site.parent_site.subdomain %>.socraticanswers.com" class="nav-list-item">Parent</a>
+                <% } %>
                 <% if(site.meta_site) { %>
                     <a href="https://<%= site.meta_site.subdomain %>.socraticanswers.com" class="nav-list-item">Meta</a>
                 <% } %>

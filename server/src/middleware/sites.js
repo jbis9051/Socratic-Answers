@@ -12,9 +12,16 @@ Site.getAllSites().then(allsites => {
         sites[site.subdomain] = site;
     });
     Object.values(sites).forEach(site => {
-        const meta_site = Object.values(sites).find(possible_meta => possible_meta.is_meta && possible_meta.parent_site === site.id);
-        if (meta_site) {
-            site.meta_site = meta_site;
+        if (site.is_meta) {
+            const parent_site = Object.values(sites).find(possible_parent => !possible_parent.is_meta && possible_parent.id === site.parent_site);
+            if (parent_site) {
+                site.parent_site = parent_site;
+            }
+        } else {
+            const meta_site = Object.values(sites).find(possible_meta => possible_meta.is_meta && possible_meta.parent_site === site.id);
+            if (meta_site) {
+                site.meta_site = meta_site;
+            }
         }
     })
 });

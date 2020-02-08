@@ -1,4 +1,6 @@
-const md = window.markdownit();
+const md = window.markdownit({linkify: true});
+
+md.disable('table');
 
 function createEditor(textarea, preview) {
     function render() {
@@ -7,6 +9,7 @@ function createEditor(textarea, preview) {
             hljs.highlightBlock(block);
         });
     }
+
     textarea.addEventListener("keyup", event => {
         render();
     });

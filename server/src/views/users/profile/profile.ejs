@@ -21,7 +21,11 @@
             </div>
             <div class="profile-meta-wrapper">
                 <ul>
-                    <% [user.location, user.website, user.github].filter(point => !!point).forEach(point => { %>
+                    <% [user.created.toLocaleString(), user.location].filter(point => !!point).forEach(point => { %>
+                        <li><%= point %></li>
+                    <% });
+
+                    [user.website, user.github].filter(point => !!point).forEach(point => { %>
                         <li><a target="_blank" href="<%= point %>"><%= point %></a></li>
                     <% }) %>
                 </ul>
