@@ -13,6 +13,10 @@ document.querySelectorAll('.downvote').forEach(el => {
 });
 
 function _handleClick(el, positive) {
+    if (!loggedIn) {
+        window.location.href = "/users/signin?r=" + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+        return;
+    }
     const oppArrowSelector = el.parentElement.querySelector(positive ? '.downvote' : '.upvote');
 
     let main;
@@ -45,43 +49,39 @@ function addToVote(el, amount) {
     el.querySelector('span').innerText = Math.max(parseInt(el.querySelector('span').innerText) + amount, 0).toString();
 }
 
-async function vote(questionid, answerId, upvote) {
-    const formdata = new URLSearchParams();
-    formdata.append("question", questionid);
-    formdata.append("answer", answerId);
-    formdata.append("upvote", upvote);
-    const resp = await fetch(`/vote`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formdata
-    });
+async function voteRequest(fetchFunction) {
+    const resp = await fetchFunction;
     const content = await resp.json();
     if (!content.success) {
         console.error(content.error);
-        if(content.error === "")
-        return false;
+        throw content.error;
     }
     return true;
 }
 
-
-async function unvote(questionid, answerId) {
+function vote(questionid, answerId, upvote) {
     const formdata = new URLSearchParams();
     formdata.append("question", questionid);
     formdata.append("answer", answerId);
-    const resp = await fetch(`/unvote`, {
+    formdata.append("upvote", upvote);
+    return voteRequest(fetch(`/vote`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: formdata
-    });
-    const content = await resp.json();
-    if (!content.success) {
-        console.error(content.error);
-        return false;
-    }
-    return true;
+    }));
+}
+
+function unvote(questionid, answerId) {
+    const formdata = new URLSearchParams();
+    formdata.append("question", questionid);
+    formdata.append("answer", answerId);
+    return voteRequest(fetch(`/unvote`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formdata
+    }));
 }

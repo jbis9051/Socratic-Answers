@@ -7,35 +7,80 @@ const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
 
 router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
-    res.render('qna/ask', {csrfToken: req.csrfToken(), errors: [], body: "", title: "", tags: ""});
+    res.render('qna/ask', {
+        csrfToken: req.csrfToken(),
+        errors: [],
+        body: "",
+        title: "",
+        tags: "",
+        page_title: "Ask a Question!"
+    });
 });
 
 router.post('/ask', requireUser, csrfToken, async function (req, res, next) {
     const tags = req.body.tags.split(",").map(tag => tag.trim().replace(/ /g, "-"));
-    const tagsString = tags.join("");
-    const errors = [];
-    if (tags.length < 1) {
-        errors.push("At least one tag is required.");
-    }
-    if (req.body.title.length >= 256) {
-        errors.push("The title must be less than 256 characters.")
-    }
-    if (tagsString.length + (tags.length * 2) >= 256) {
-        errors.push("Please use less tags.");
-    }
+    const errors = questionValidator(req.body.title, tags);
     if (errors.length !== 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
             errors: errors,
             body: req.body.body,
             title: req.body.title,
-            tags: req.body.tags
+            tags: req.body.tags,
+            page_title: "Ask a Question!",
         });
         return;
     }
     const question = await Question.create(req.body.title, req.body.body, tags, req.site.id, req.user);
     res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
 });
+
+router.get('/edit/:id', requireUser, csrfToken, async function (req, res, next) {
+    const question = await Question.FromId(req.params.id);
+    await question.fillContent();
+    res.render('qna/ask', {
+        csrfToken: req.csrfToken(),
+        errors: [],
+        body: question.content,
+        title: question.title,
+        tags: question.taglist.join(", "),
+        page_title: "Edit Question"
+    });
+});
+
+router.post('/edit/:id', requireUser, csrfToken, async function (req, res, next) {
+    const tags = req.body.tags.split(",").map(tag => tag.trim().replace(/ /g, "-"));
+    const errors = questionValidator(req.body.title, tags);
+    if (errors.length !== 0) {
+        res.render('qna/ask', {
+            csrfToken: req.csrfToken(),
+            errors: errors,
+            body: req.body.body,
+            title: req.body.title,
+            tags: req.body.tags,
+            page_title: "Edit Question"
+        });
+        return;
+    }
+    const question = await Question.FromId(req.params.id);
+    await question.edit(req.body.title, req.body.body, tags);
+    res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
+});
+
+function questionValidator(title, tags) {
+    const tagsString = tags.join("");
+    const errors = [];
+    if (tags.length < 1) {
+        errors.push("At least one tag is required.");
+    }
+    if (title.length >= 256) {
+        errors.push("The title must be less than 256 characters.")
+    }
+    if (tagsString.length + (tags.length * 2) >= 256) {
+        errors.push("Please use less tags.");
+    }
+    return errors;
+}
 
 router.get('/:id', async function (req, res, next) {
     const id = parseInt(req.params.id);
@@ -72,12 +117,12 @@ router.get('/:id/:title', async function (req, res, next) {
         await answer.fillContent();
         const qaID = await answer.getQaId(question.id);
         answer.votes = await answer.getVotes(qaID);
-        if(req.user){
+        if (req.user) {
             answer.userSelected = await answer.getVoteForUser(qaID, req.user.id);
         } else {
             answer.userSelected = null;
         }
-        if(answer.userSelected === true){
+        if (answer.userSelected === true) {
             answer.userSelected = "upvote";
         } else if (answer.userSelected === false) {
             answer.userSelected = "downvote";

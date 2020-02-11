@@ -67,27 +67,7 @@
     color: #0f72be;
     text-decoration: underline;
 }
-.question-tags {
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 5px 5px 5px 0;
-}
 
-.question-tag {
-    display: inline-block;
-    padding: 5px;
-    font-size: 13px;
-    background-color: #333652;
-    white-space: nowrap;
-    color: #4eb8ff;
-    margin-right: 5px;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-.question-tag:hover {
-    color: #4b93d7;
-}
 .solutions {
     background: #33b631;
 }

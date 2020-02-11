@@ -38,7 +38,7 @@ class Question {
     async fillContent() {
         const {row} = await conn.singleRow('SELECT content FROM question WHERE id = $1', [this.id]);
         this.content =  row.content;
-        this.renderedContent = markdown.render(this.content)
+        this.renderedContent = markdown.render(this.content);
     }
 
     getCreatedFriendlyTimeAgo() {
@@ -60,6 +60,7 @@ class Question {
         this.answers = obj.answers;
         this.score = obj.score;
         this.created = obj.created;
+        this.tag_string = obj.tag_string;
         if (obj.hasOwnProperty("taglist")) {
             this.taglist = obj.taglist;
         } else {
@@ -98,6 +99,15 @@ class Question {
     static async create(title, body, tags, siteid, creator){
         const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tags.map(tag => '<' + tag + '>').join("")]);
         return await Question.FromId(row.insertid);
+    }
+    async edit(title, body, tags){
+        this.title = title;
+        this.content = body;
+        this.renderedContent = markdown.render(this.content);
+        this.taglist = tags;
+        this.tag_string = tags.map(tag => '<' + tag + '>').join("");
+
+        await conn.query("UPDATE question SET title = $1, content = $2, tag_string = $3, last_modified = CURRENT_TIMESTAMP WHERE id = $4", [this.title, this.content, this.tag_string, this.id]);
     }
 }
 

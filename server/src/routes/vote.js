@@ -5,7 +5,8 @@ const Answer = require('../models/Answer');
 
 router.post('/vote', async function (req, res, next) {
     if(!req.user){
-        res.json({success: false, error: "You must be logged in."});
+        res.status(401);
+        res.json({success: false, error: "Not logged in"});
         return;
     }
     const answerId = parseInt(req.body.answer);
@@ -13,12 +14,14 @@ router.post('/vote', async function (req, res, next) {
     const upvote = req.body.upvote === "true";
 
     if (isNaN(answerId) || isNaN(questionId)) {
+        res.status(400);
         res.json({success: false, error: "Bad Input"});
         return;
     }
     const answer = new Answer(answerId);
     const qaId = await answer.getQaId(questionId);
     if (!qaId) {
+        res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
         return;
     }
@@ -28,7 +31,8 @@ router.post('/vote', async function (req, res, next) {
 
 router.post('/unvote', async function (req, res, next) {
     if(!req.user){
-        res.json({success: false, error: "You must be logged in."});
+        res.status(401);
+        res.json({success: false, error: "Not logged in"});
         return;
     }
 
@@ -36,12 +40,14 @@ router.post('/unvote', async function (req, res, next) {
     const questionId = parseInt(req.body.question);
 
     if (isNaN(answerId) || isNaN(questionId)) {
+        res.status(400);
         res.json({success: false, error: "Bad Input"});
         return;
     }
     const answer = new Answer(answerId);
     const qaId = await answer.getQaId(questionId);
     if (!qaId) {
+        res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
         return;
     }
