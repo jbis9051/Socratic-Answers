@@ -68,7 +68,21 @@ router.get('/:id/:title', async function (req, res, next) {
     }
     await question.fillContent();
     const answers = await question.getAnswers(req.site.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
-    await Promise.all(answers.map(answer => answer.fillContent()));
+    await Promise.all(answers.map(async answer => {
+        await answer.fillContent();
+        const qaID = await answer.getQaId(question.id);
+        answer.votes = await answer.getVotes(qaID);
+        if(req.user){
+            answer.userSelected = await answer.getVoteForUser(qaID, req.user.id);
+        } else {
+            answer.userSelected = null;
+        }
+        if(answer.userSelected === true){
+            answer.userSelected = "upvote";
+        } else if (answer.userSelected === false) {
+            answer.userSelected = "downvote";
+        }
+    }));
     res.render('qna/view_question', {question, answers});
 });
 

@@ -4,6 +4,10 @@ const router = express.Router();
 const Answer = require('../models/Answer');
 
 router.post('/vote', async function (req, res, next) {
+    if(!req.user){
+        res.json({success: false, error: "You must be logged in."});
+        return;
+    }
     const answerId = parseInt(req.body.answer);
     const questionId = parseInt(req.body.question);
     const upvote = req.body.upvote === "true";
@@ -23,6 +27,11 @@ router.post('/vote', async function (req, res, next) {
 });
 
 router.post('/unvote', async function (req, res, next) {
+    if(!req.user){
+        res.json({success: false, error: "You must be logged in."});
+        return;
+    }
+
     const answerId = parseInt(req.body.answer);
     const questionId = parseInt(req.body.question);
 

@@ -15,7 +15,7 @@
     <div class="question">
         <h1 class="question--title"><%= question.title %></h1>
         <span class="question--date"><%= question.getCreatedFriendlyTimeAgo() %> (<%= question.created.toISOString() %>)</span>
-        <div class="question--body">
+        <div class="question--body md-body">
             <%- question.renderedContent %>
         </div>
         <div class="post--operations">
@@ -33,15 +33,16 @@
         <div class="main-content answer">
             <div class="answer--split">
                 <div class="answer--voting" data-answer-id="<%= answer.id %>">
-                    <svg class="upvote" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
-                        <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59" style="fill:#999"/>
+                    <svg class="upvote arrow <%= answer.userSelected === "upvote" ? "selected" : ""%>" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
                     </svg>
-                    <span class="score">0</span>
-                    <svg class="downvote" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
-                        <polygon points="32 0 16 23.59 0 0 32 0" style="fill: #999"/>
+                    <span class="score positive">+<span><%= answer.votes.positives %></span></span>
+                    <span class="score negative">-<span><%= answer.votes.negatives %></span></span>
+                    <svg class="downvote arrow <%= answer.userSelected === "downvote" ? "selected" : ""%>" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon points="32 0 16 23.59 0 0 32 0"/>
                     </svg>
                 </div>
-                <div class="answers--body">
+                <div class="answers--body md-body">
                     <%- answer.renderedContent %>
                 </div>
             </div>

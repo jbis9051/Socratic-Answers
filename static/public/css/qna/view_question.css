@@ -8,6 +8,9 @@
 .question--title {
     margin: 5px 0;
 }
+.question--body {
+    overflow: auto;
+}
 .question--date, .answer--date {
     display: block;
     font-size: 14px;
@@ -81,4 +84,19 @@
 }
 .answers--body {
     flex: 1;
+    overflow: auto;
+}
+.score.positive {
+    color: #6fee68;
+}
+.score.negative {
+    color: #ff5f62;
+}
+
+.answer--voting .arrow polygon {
+    fill: #999;
+}
+
+.answer--voting .arrow.selected polygon {
+    fill: #ecbb32;
 }

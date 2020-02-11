@@ -1,5 +1,5 @@
 body {
-   /* font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;*/
+    /* font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;*/
     font-family: 'Noto Sans', sans-serif;
     padding-top: 60px;
     background: #16151b;
@@ -10,9 +10,11 @@ a {
     color: #37c9ff;
     text-decoration: none;
 }
+
 a:hover {
     color: #35a2d6;
 }
+
 .main-content {
     width: 90%;
     border-radius: 0.25rem;
@@ -20,18 +22,16 @@ a:hover {
     max-width: 1200px;
     margin: 30px auto 20px;
 }
+
 .main-content, .content-background {
     background: #2c2a35;
 }
- input,textarea {
-     outline: unset;
-     border: unset;
- }
 
-.hljs {
-    background: #373737;
-    border-radius: 0.25rem;
+input, textarea {
+    outline: unset;
+    border: unset;
 }
+
 h1 {
     line-height: 40px;
 }

@@ -76,13 +76,21 @@ class Answer {
     }
 
     async getVotes(qaId){
-        const {positives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId])
-        const {negatives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId])
+        const {row: positives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId]);
+        const {row: negatives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId]);
         return {
             positives: positives.total,
             negatives: negatives.total,
             net: positives.total - negatives.total
         }
+    }
+
+    async getVoteForUser(qaID, userid){
+        const {row} = await conn.singleRow("SELECT upvote FROM votes WHERE qa_id = $1 AND user_id = $2", [qaID, userid]);
+        if(row === undefined){
+            return null;
+        }
+       return row.upvote;
     }
 }
 
