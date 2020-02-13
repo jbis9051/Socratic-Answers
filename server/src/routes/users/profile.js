@@ -8,32 +8,30 @@ const User = require('../../models/User');
 const requireUser = require('../../middleware/requireUser');
 const csrfProtection = require('../../middleware/csurf');
 
-const Validation = require('../../helpers/validation');
 const urlHasDomain = require('../../helpers/urlHasDomain');
 
 const markdown = require('../../helpers/markdown');
+const {idParam, ProfileEditForm} = require('../../validation');
 
-router.get('/:id', async function (req, res, next) {
-    const id = parseInt(req.params.id);
-    if (!id) {
+router.get('/:id', idParam,  async function (req, res, next) {
+    if(req.validationErrors){
         next();
         return;
     }
-    const username = await User.getUsername(id);
+    const username = await User.getUsername(req.params.id);
     if (!username) {
         next();
         return;
     }
-    res.redirect(`/users/${id}/${req.app.locals.friendlyURLPath(username)}`);
+    res.redirect(`/users/${req.params.id}/${req.app.locals.friendlyURLPath(username)}`);
 });
 
-router.get('/:id/:username', async function (req, res, next) {
-    const id = parseInt(req.params.id);
-    if (!id) {
+router.get('/:id/:username', idParam, async function (req, res, next) {
+    if(req.validationErrors) {
         next();
         return;
     }
-    const user = await User.FromId(id);
+    const user = await User.FromId(req.params.id);
     if (!user) {
         next();
         return;
@@ -48,13 +46,12 @@ router.get('/:id/:username', async function (req, res, next) {
     res.render('users/profile/profile');
 });
 
-router.get('/answers/:id', async function (req, res, next) {
-    const id = parseInt(req.params.id);
-    if (!id) {
+router.get('/answers/:id', idParam,  async function (req, res, next) {
+    if(req.validationErrors) {
         next();
         return;
     }
-    const user = await User.FromId(id);
+    const user = await User.FromId(req.params.id);
     if (!user) {
         next();
         return;
@@ -68,27 +65,9 @@ router.get('/answers/:id', async function (req, res, next) {
     res.render('users/profile/answers', {answers, answersCount, user, tab: "answers", sorting: sorting});
 });
 
-router.post('/edit', csrfProtection, async function (req, res, next) {
-    if (![/*"username",*/ "bio", "profile_image", "location", "website", "github"].every(key => key in req.body)) {
-        res.send("An error occurred.");
-        return;
-    }
-    const errors = [];
-    /* if (!Validation.Username.test(req.body.username)) {
-         errors.push("Invalid Username");
-     }*/
-    const github = url.parse(req.body.github);
-    const website = url.parse(req.body.website);
-
-    if (req.body.github !== "" && !/^https?:/.test(github.protocol) || !urlHasDomain(req.body.github, "github.com")) {
-        errors.push("GitHub URL must be a valid GitHub URL");
-    }
-
-    if (req.body.website !== "" && !/^https?:/.test(website.protocol)) {
-        errors.push("Website URL must be a valid URL");
-    }
-    if (errors.length !== 0) {
-        req.errors = errors;
+router.post('/edit', ProfileEditForm, csrfProtection, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        req.errors = req.validationErrors[0].map(error => error.msg);
         next();
         return;
     }

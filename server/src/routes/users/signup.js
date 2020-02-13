@@ -5,23 +5,19 @@ const csrfProtection = require('../../middleware/csurf');
 
 const User = require('../../models/User');
 
-const ValidateRegex = require('../../helpers/validation');
 const tokenizeResponse = require('../../helpers/tokenizeResponse');
+const {SignUpForm} = require('../../validation');
 
 router.get("/signup", csrfProtection, function (req, res, next) {
     res.render("users/auth/signup", { errors: [], username: "", email: "", csrfToken: req.csrfToken()});
 });
 
 
-router.post("/signup", csrfProtection, async function (req, res, next) {
-    const errors = [];
+router.post("/signup", SignUpForm,  csrfProtection, async function (req, res, next) {
+    let errors = [];
 
-    if (!req.body.username || !ValidateRegex.Username.test(req.body.username)) {
-        errors.push("Empty or Invalid Username.");
-    }
-
-    if (!req.body.email || !ValidateRegex.Email.test(req.body.email)) {
-        errors.push("Empty or Invalid Email.");
+    if (req.validationErrors[0].length > 0) {
+        errors = req.validationErrors[0].map(error => error.msg);
     } else {
         if (await User.emailExists(req.body.email)) {
             const user = await User.FromEmail(req.body.email);
@@ -35,9 +31,6 @@ router.post("/signup", csrfProtection, async function (req, res, next) {
         }
     }
 
-    if (!req.body.password || !ValidateRegex.Password.every(reg => reg.test(req.body.password))) {
-        errors.push("Empty or Invalid Password.");
-    }
 
     if (errors.length !== 0) {
         res.render("users/auth/signup", {

@@ -3,8 +3,10 @@ const router = express.Router();
 
 const csrfProtection = require('../../middleware/csurf');
 const tokenizeResponse = require('../../helpers/tokenizeResponse');
+const {SignInForm} = require('../../validation');
 
 const User = require('../../models/User');
+
 
 router.get('/signin', csrfProtection, function (req, res, next) {
     res.render('users/auth/signin', {
@@ -14,7 +16,7 @@ router.get('/signin', csrfProtection, function (req, res, next) {
     });
 });
 
-router.post('/signin', csrfProtection, async function (req, res, next) {
+router.post('/signin',  SignInForm, csrfProtection, async function (req, res, next) {
     function error(message = "Username and Password don't match") {
         res.render('users/auth/signin', {
             errorMessage: message,
@@ -23,10 +25,11 @@ router.post('/signin', csrfProtection, async function (req, res, next) {
         });
     }
 
-    if (!req.body.email || !req.body.password) {
+    if (req.validationErrors[0].length > 0) {
         error();
         return;
     }
+
     const user = await User.FromCredentials(req.body.email, req.body.password);
     if (!user) {
         error();

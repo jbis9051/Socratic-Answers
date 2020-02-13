@@ -56,11 +56,6 @@ form a:hover {
     text-decoration: underline;
 }
 
-.error {
-    display: block;
-    color: red;
-}
-
 .btn {
     font-size: 19px;
 }

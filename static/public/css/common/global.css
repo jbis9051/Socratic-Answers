@@ -35,3 +35,8 @@ input, textarea {
 h1 {
     line-height: 40px;
 }
+
+.error {
+    display: block;
+    color: #ff7c69;
+}

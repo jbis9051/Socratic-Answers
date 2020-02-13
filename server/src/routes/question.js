@@ -5,6 +5,7 @@ const Question = require('../models/Question');
 const requireUser = require('../middleware/requireUser');
 const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
+const {QuestionAskEditForm, idParam} = require('../validation');
 
 router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
     res.render('qna/ask', {
@@ -17,13 +18,11 @@ router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
     });
 });
 
-router.post('/ask', requireUser, csrfToken, async function (req, res, next) {
-    const tags = req.body.tags.split(",").map(tag => tag.trim().replace(/ /g, "-"));
-    const errors = questionValidator(req.body.title, tags);
-    if (errors.length !== 0) {
+router.post('/ask', requireUser, csrfToken, QuestionAskEditForm, async function (req, res, next) {
+     if (req.validationErrors[0].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
-            errors: errors,
+            errors: req.validationErrors[0].map(error => error.msg),
             body: req.body.body,
             title: req.body.title,
             tags: req.body.tags,
@@ -31,12 +30,18 @@ router.post('/ask', requireUser, csrfToken, async function (req, res, next) {
         });
         return;
     }
-    const question = await Question.create(req.body.title, req.body.body, tags, req.site.id, req.user);
+    const question = await Question.create(req.body.title, req.body.body, req.body.tags, req.site.id, req.user);
     res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
 });
 
-router.get('/edit/:id', requireUser, csrfToken, async function (req, res, next) {
+router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
+    }
     const question = await Question.FromId(req.params.id);
+    if(!question){
+        return next();
+    }
     await question.fillContent();
     res.render('qna/ask', {
         csrfToken: req.csrfToken(),
@@ -48,61 +53,46 @@ router.get('/edit/:id', requireUser, csrfToken, async function (req, res, next) 
     });
 });
 
-router.post('/edit/:id', requireUser, csrfToken, async function (req, res, next) {
-    const tags = req.body.tags.split(",").map(tag => tag.trim().replace(/ /g, "-"));
-    const errors = questionValidator(req.body.title, tags);
-    if (errors.length !== 0) {
+router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
+    }
+    if (req.validationErrors[1].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
             errors: errors,
             body: req.body.body,
             title: req.body.title,
-            tags: req.body.tags,
+            tags: req.body.tags.join(", "),
             page_title: "Edit Question"
         });
         return;
     }
     const question = await Question.FromId(req.params.id);
-    await question.edit(req.body.title, req.body.body, tags);
+    if(!question){
+        return next();
+    }
+    await question.edit(req.body.title, req.body.body, req.body.tags);
     res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
 });
 
-function questionValidator(title, tags) {
-    const tagsString = tags.join("");
-    const errors = [];
-    if (tags.length < 1) {
-        errors.push("At least one tag is required.");
+router.get('/:id', idParam, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
     }
-    if (title.length >= 256) {
-        errors.push("The title must be less than 256 characters.")
-    }
-    if (tagsString.length + (tags.length * 2) >= 256) {
-        errors.push("Please use less tags.");
-    }
-    return errors;
-}
-
-router.get('/:id', async function (req, res, next) {
-    const id = parseInt(req.params.id);
-    if (!id) {
-        next();
-        return;
-    }
-    const title = await Question.getTitle(id);
+    const title = await Question.getTitle(req.params.id);
     if (!title) {
         next();
         return;
     }
-    res.redirect(`/questions/${id}/${req.app.locals.friendlyURLPath(title)}`);
+    res.redirect(`/questions/${req.params.id}/${req.app.locals.friendlyURLPath(title)}`);
 });
 
-router.get('/:id/:title', async function (req, res, next) {
-    const id = parseInt(req.params.id);
-    if (!id) {
-        next();
-        return;
+router.get('/:id/:title', idParam,async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
     }
-    const question = await Question.FromId(id);
+    const question = await Question.FromId(req.params.id);
     if (!question) {
         next();
         return;
