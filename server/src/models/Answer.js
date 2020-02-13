@@ -17,15 +17,18 @@ class Answer {
     async init() {
         const {row} = await conn.singleRow('SELECT * FROM answers WHERE id = $1', [this.id]);
         if (!row) {
-            return;
+            return false;
         }
         this._setAttributes(row);
+        return true;
     }
 
     static async FromId(id) {
         const answer = new Answer(id);
-        await answer.init();
-        return answer;
+        if(await answer.init()){
+            return answer;
+        }
+        return undefined;
     }
 
 
@@ -64,7 +67,14 @@ class Answer {
 
     static async create(body, site, question, creator) {
         const {row} = await conn.singleRow("INSERT INTO answers (content, site_id, initial_question_id, creator_username, creator_id) VALUES ($1,$2,$3,$4,$5) RETURNING id AS insertid", [body, site, question, creator.username, creator.id]);
-        await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [question, row.insertid]);
+        if(question){
+            await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [question, row.insertid]);
+            await conn.query("UPDATE question SET answers = answers + 1 WHERE id = $1", [question.id]);
+        }
+    }
+
+    edit(body) {
+        return conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body,this.id]);
     }
 
     async getQaId(quesitonid){

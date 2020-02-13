@@ -16,15 +16,18 @@ class Question {
     async init() {
         const {row} = await conn.singleRow('SELECT creator_id, creator_username, title, created,last_modified, tag_string, score, answers, solutions FROM question WHERE id = $1', [this.id]);
         if (!row) {
-            return;
+            return false;
         }
         this._setAttributes(row);
+        return true;
     }
 
     static async FromId(id) {
         const question = new Question(id);
-        await question.init();
-        return question;
+        if(await question.init()){
+            return question;
+        }
+        return undefined;
     }
 
     static async getTitle(id) {

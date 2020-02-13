@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/md.css">
+    <link rel="stylesheet" href="/css/qna/view_question.css">
+    <link rel="stylesheet" href="/css/qna/view_answer.css">
+    <title><%= answer.content.substring(0, 15) %>... | Socratic Answers</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="main-content content-background">
+    <h2>Answer Content</h2>
+    <div class="answers--body md-body">
+        <%- answer.renderedContent %>
+    </div>
+    <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+    <div class="post--operations">
+        <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
+        <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
+        <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
+    </div>
+    <span class="author">Authored by <a
+                href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
+</div>
+<div class="main-content content-background">
+    <h2>Linked Questions</h2>
+    <% if(linkedQuestions.length > 0){ %>
+        <ul>
+            <% linkedQuestions.forEach(linkedQuestion => { %>
+                <li><a href="/questions/<%= linkedQuestion.id %>"><%= linkedQuestion.title %></a></li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        This answer hasn't been linked yet.
+    <% } %>
+</div>
+</body>
+</html>

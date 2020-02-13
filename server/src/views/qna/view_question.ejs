@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/css/md.css">
     <link rel="stylesheet" href="/css/qna/tags.css">
     <link rel="stylesheet" href="/css/qna/view_question.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
     <script src="/js/markdown-editor.js"></script>
     <title><%= question.title %></title>
 </head>
@@ -54,7 +53,7 @@
                     <%- answer.renderedContent %>
                 </div>
             </div>
-            <span class="answer--date"><%= question.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+            <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
             <div class="post--operations">
                 <% if(answer.initial_question_id === null) { %>
                     <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
@@ -62,7 +61,7 @@
                     <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
                     /
                 <% } %>
-                <a class="post--operation" href="/answers/links/<%= answer.id %>">links</a> /
+                <a class="post--operation" href="/answers/<%= answer.id %>">links</a> /
                 <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
                 <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
                 <a class="post--operation" href="/answers/<%= answer.id %>">share</a>

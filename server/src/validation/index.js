@@ -19,7 +19,9 @@ const validators = {
     SignUpForm: require('./auth').SignUp,
     idParam: require('./idParam'),
     ProfileEditForm: require('./profileEditForm'),
-    QuestionAskEditForm: require('./questionAskEditForm')
+    QuestionAskEditForm: require('./questionAskEditForm'),
+    AnswerCreateForm: require('./answerCreateAndEditForm').Create,
+    AnswerEditForm: require('./answerCreateAndEditForm').Edit,
 };
 
 Object.keys(validators).forEach(key => {

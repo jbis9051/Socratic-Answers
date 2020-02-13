@@ -14,7 +14,7 @@ const markdown = require('../../helpers/markdown');
 const {idParam, ProfileEditForm} = require('../../validation');
 
 router.get('/:id', idParam,  async function (req, res, next) {
-    if(req.validationErrors){
+    if(req.validationErrors[0].length > 0){
         next();
         return;
     }
@@ -27,7 +27,7 @@ router.get('/:id', idParam,  async function (req, res, next) {
 });
 
 router.get('/:id/:username', idParam, async function (req, res, next) {
-    if(req.validationErrors) {
+    if(req.validationErrors[0].length > 0){
         next();
         return;
     }
@@ -47,7 +47,7 @@ router.get('/:id/:username', idParam, async function (req, res, next) {
 });
 
 router.get('/answers/:id', idParam,  async function (req, res, next) {
-    if(req.validationErrors) {
+    if(req.validationErrors[0].length > 0){
         next();
         return;
     }
