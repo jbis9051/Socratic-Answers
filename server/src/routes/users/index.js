@@ -14,7 +14,9 @@ router.get('/logout', async function (req, res, next) {
         res.redirect("/");
         return;
     }
-    await User.removeToken(req.cookies.token);
+    if(req.cookies.token){
+        await User.removeToken(req.cookies.token);
+    }
     res.redirect("/");
 });
 

@@ -27,8 +27,10 @@ Site.getAllSites().then(allsites => {
 });
 
 
-router.use('*', function (req, res, next) {
+router.all('*', function (req, res, next) {
     if (req.subdomains.length === 0) {
+        req.site = -1;
+        res.locals.site = -1;
         return homeRouter(req, res, next);
     }
     const subString = req.subdomains.reverse().join(".");

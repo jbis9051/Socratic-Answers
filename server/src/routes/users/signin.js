@@ -7,8 +7,10 @@ const {SignInForm} = require('../../validation');
 
 const User = require('../../models/User');
 
+const redirUsers = require('../../middleware/redirUsers');
 
-router.get('/signin', csrfProtection, function (req, res, next) {
+
+router.get('/signin', redirUsers, csrfProtection, function (req, res, next) {
     res.render('users/auth/signin', {
         errorMessage: null,
         redir: req.query.r || null,
@@ -16,7 +18,7 @@ router.get('/signin', csrfProtection, function (req, res, next) {
     });
 });
 
-router.post('/signin',  SignInForm, csrfProtection, async function (req, res, next) {
+router.post('/signin', redirUsers, SignInForm, csrfProtection, async function (req, res, next) {
     function error(message = "Username and Password don't match") {
         res.render('users/auth/signin', {
             errorMessage: message,

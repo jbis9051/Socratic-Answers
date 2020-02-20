@@ -22,6 +22,8 @@
         <input name="email" type="text">
         <label>Password</label>
         <input name="password" type="password">
+
+        <a href="/resetpassword" class="reset_link">I should have used a password manager (forgot password)</a>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button type="submit" class="btn">Login</button>
     </form>

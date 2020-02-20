@@ -1,4 +1,4 @@
-CREATE TABLE questions_join_answers
+CREATE TABLE questions_join_answers -- aka the links table
 (
     id                 SERIAL PRIMARY KEY,
     added              TIMESTAMPTZ NOT NULL DEFAULT NOW(),

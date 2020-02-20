@@ -25,7 +25,7 @@ class Answer {
 
     static async FromId(id) {
         const answer = new Answer(id);
-        if(await answer.init()){
+        if (await answer.init()) {
             return answer;
         }
         return undefined;
@@ -67,17 +67,28 @@ class Answer {
 
     static async create(body, site, question, creator) {
         const {row} = await conn.singleRow("INSERT INTO answers (content, site_id, initial_question_id, creator_username, creator_id) VALUES ($1,$2,$3,$4,$5) RETURNING id AS insertid", [body, site, question, creator.username, creator.id]);
-        if(question){
-            await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [question, row.insertid]);
-            await conn.query("UPDATE question SET answers = answers + 1 WHERE id = $1", [question.id]);
+        const answer = new Answer(row.insertId);
+        if (question) {
+            await answer.link(question);
         }
+        return answer;
+    }
+
+    async link(quesitonid) {
+        await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [quesitonid, this.id]);
+        await conn.query("UPDATE question SET answers = answers + 1 WHERE id = $1", [quesitonid]);
+    }
+
+    async unlink(quesitonid) {
+        await conn.query("DELETE FROM questions_join_answers WHERE question_id = $1 AND answer_id = $2", [quesitonid, this.id]);
+        await conn.query("UPDATE question SET answers = answers - 1 WHERE id = $1", [quesitonid]);
     }
 
     edit(body) {
-        return conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body,this.id]);
+        return conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body, this.id]);
     }
 
-    async getQaId(quesitonid){
+    async getQaId(quesitonid) {
         const {row} = await conn.singleRow(`SELECT id
                                             FROM questions_join_answers
                                             WHERE question_id = $1
@@ -85,9 +96,9 @@ class Answer {
         return row.id;
     }
 
-    async getVotes(qaId){
-        const {row: positives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId]);
-        const {row: negatives} = await conn.singleRow("SELECT COUNT(*) as total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId]);
+    async getVotes(qaId) {
+        const {row: positives} = await conn.singleRow("SELECT COUNT(*) AS total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId]);
+        const {row: negatives} = await conn.singleRow("SELECT COUNT(*) AS total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId]);
         return {
             positives: positives.total,
             negatives: negatives.total,
@@ -95,12 +106,16 @@ class Answer {
         }
     }
 
-    async getVoteForUser(qaID, userid){
+    static solve(qaId, solve = true){
+        return conn.query("UPDATE questions_join_answers SET answer_is_solution = $1 WHERE id = $2", [solve, qaId])
+    }
+
+    async getVoteForUser(qaID, userid) {
         const {row} = await conn.singleRow("SELECT upvote FROM votes WHERE qa_id = $1 AND user_id = $2", [qaID, userid]);
-        if(row === undefined){
+        if (row === undefined) {
             return null;
         }
-       return row.upvote;
+        return row.upvote;
     }
 }
 

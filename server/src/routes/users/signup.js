@@ -7,13 +7,14 @@ const User = require('../../models/User');
 
 const tokenizeResponse = require('../../helpers/tokenizeResponse');
 const {SignUpForm} = require('../../validation');
+const redirUsers = require('../../middleware/redirUsers');
 
-router.get("/signup", csrfProtection, function (req, res, next) {
+router.get("/signup", redirUsers, csrfProtection, function (req, res, next) {
     res.render("users/auth/signup", { errors: [], username: "", email: "", csrfToken: req.csrfToken()});
 });
 
 
-router.post("/signup", SignUpForm,  csrfProtection, async function (req, res, next) {
+router.post("/signup", redirUsers,  SignUpForm,  csrfProtection, async function (req, res, next) {
     let errors = [];
 
     if (req.validationErrors[0].length > 0) {

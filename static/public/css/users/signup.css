@@ -11,3 +11,8 @@
     font-size: 12px;
     padding: 10px;
 }
+.reset_link {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+}

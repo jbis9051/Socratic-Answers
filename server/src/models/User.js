@@ -93,19 +93,24 @@ class User {
         return false;
     }
 
+    static async FromResetToken(code) {
+        const {row} = await conn.singleRow(`SELECT *
+                                            FROM "password-reset"
+                                                     INNER JOIN users ON "password-reset".userid = users.id
+                                            WHERE "password-reset".code = $1`, [code]);
+
+        return User.FromQuery();
+    }
+
 
     /* email */
 
     async sendConfirmEmail(email) {
-
         const token = crypto.randomBytes(64).toString('hex');
-
         conn.query("INSERT INTO \"confirmation-emails\" (userid, code, email) VALUES ($1, $2, $3)", [this.id, token, email]);
-
-
-        return await mailgun.helpers.simpleText(this.email, "Confirm Email - Sitename", `Please click the link below to confirm your email for Sitename. 
-        
-        https://Sitename.com/users/confirm?token=${token}
+        return await mailgun.helpers.simpleText(this.email, "Confirm Email - Socratic Answers", `Please click the link below to confirm your email for Socratic Answers. 
+       
+        https://socraticanswers.com/users/confirm?token=${token}
         
         `);
     }
@@ -251,6 +256,49 @@ class User {
     async removeVote(qaId) {
         await conn.query("DELETE FROM votes WHERE qa_id = $1 AND user_id = $2", [qaId, this.id]);
     }
+
+    /* reset */
+
+    async sendResetLink() {
+        const token = crypto.randomBytes(64).toString('hex');
+        conn.query("INSERT INTO \"password-reset\" (userid, code) VALUES ($1, $2)", [this.id, token]);
+        return await mailgun.helpers.simpleText(this.email, "Reset Password - Socratic Answers", `A password reset request has been made for the account connected to this email on Socratic Answers. If you didn't make this request, there's nothing you have to do. Otherwise, click the link below to reset your password. Do not share this link with anyone or post it online. It is active for 72 hours.
+       
+        https://socraticanswers.com/resetpassword/reset?token=${token}
+        
+        `);
+    }
+
+    static async resetTokenExist(token) {
+        const {row} = await conn.singleRow(`SELECT code
+                                      FROM "password-reset"
+                                      WHERE code = $1`, [token]);
+        if (!row) {
+            return false;
+        }
+        return token.length === row.code.length && crypto.timingSafeEqual(Buffer.from(row.code), Buffer.from(token))
+    }
+
+    static async resetPassword(token, password) {
+        const {row} = await conn.singleRow(`SELECT id, code, userid
+                                      FROM "password-reset"
+                                      WHERE code = $1`, [token]);
+        if (!row) {
+            return false;
+        }
+        if (!(token.length === row.code.length && crypto.timingSafeEqual(Buffer.from(row.code), Buffer.from(token)))) {
+            return false;
+        }
+        const hash = await bcrypt.hash(password, 10);
+        await conn.query(`UPDATE users
+                          SET password = $2
+                          WHERE id = $1`, [row.userid, hash]);
+        await conn.query(`DELETE
+                          FROM "password-reset"
+                          WHERE id = $1`, [row.id]);
+        return await User.FromId(row.id);
+    }
+
 }
 
 module.exports = User;

@@ -22,6 +22,10 @@ const validators = {
     QuestionAskEditForm: require('./questionAskEditForm'),
     AnswerCreateForm: require('./answerCreateAndEditForm').Create,
     AnswerEditForm: require('./answerCreateAndEditForm').Edit,
+    VoteValidation: require('./voteValidation'),
+    ResetPasswordEmailForm:  require('./resetPasswordEmailForm'),
+    ResetPasswordTokenCheck: require('./resetPasswordTokenCheck'),
+    ResetPasswordResetForm: require('./resetPasswordResetForm')
 };
 
 Object.keys(validators).forEach(key => {
