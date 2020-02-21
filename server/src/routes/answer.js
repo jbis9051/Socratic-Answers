@@ -23,7 +23,8 @@ router.get('/:id', idParam,  async function (req, res, next) {
 
 router.post('/create', AnswerCreateForm,async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
-        next(); //TODO show error
+        res.send(JSON.stringify(req.validationErrors));
+      //  next(); //TODO show error
         return;
     }
     await Answer.create(req.body.body, req.site.id, req.body._question, req.user);

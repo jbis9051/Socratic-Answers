@@ -48,26 +48,34 @@
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon points="32 0 16 23.59 0 0 32 0"/>
                     </svg>
+                    <% if(answer.is_solution) { %>
+                        <span class="solution_mark is_solution">✓</span>
+                    <% } else if(answer.creator.id === currentUser.id){ %>
+                        <span class="solution_mark">✓</span>
+                    <% } %>
                 </div>
                 <div class="answers--body md-body">
                     <%- answer.renderedContent %>
                 </div>
             </div>
-            <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
-            <div class="post--operations">
-                <% if(answer.initial_question_id === null) { %>
-                    <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
-                <% } else if(answer.initial_question_id !== question.id){ %>
-                    <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
-                    /
-                <% } %>
-                <a class="post--operation" href="/answers/<%= answer.id %>">links</a> /
-                <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
-                <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
-                <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
+            <div class="answer--meta">
+                <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+                <div class="post--operations">
+                    <% if(answer.initial_question_id === null) { %>
+                        <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
+                    <% } else if(answer.initial_question_id !== question.id){ %>
+                        <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
+                        /
+                    <% } %>
+                    <a class="post--operation" href="/answers/<%= answer.id %>">links</a> /
+                    <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
+                    <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
+                    <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
+                </div>
+                <span class="author">Authored by <a
+                            href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
+
             </div>
-            <span class="author">Authored by <a
-                        href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
         </div>
     <% }) %>
 </div>

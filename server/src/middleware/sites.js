@@ -4,6 +4,7 @@ const router = express.Router();
 const Site = require('../models/Site');
 
 const homeRouter = require('../routes/home');
+const mainRouter = require('../routes');
 
 let sites = {};
 
@@ -40,7 +41,7 @@ router.all('*', function (req, res, next) {
     }
     req.site = sites[subString];
     res.locals.site = sites[subString];
-    next();
+    return mainRouter(req, res, next);
 });
 
 module.exports = router;

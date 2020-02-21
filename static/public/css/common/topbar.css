@@ -1,6 +1,18 @@
-.top-bar {
+.top-message {
     position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: red;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    overflow: auto;
+}
+.top-bar {
+    position: fixed;
+    top: 40px; /* 0 */
     left: 0;
     width: 100%;
     height: 60px;

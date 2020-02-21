@@ -12,6 +12,12 @@ document.querySelectorAll('.downvote').forEach(el => {
     });
 });
 
+document.querySelectorAll('.solution_mark').forEach(el => {
+    el.addEventListener("click", async evt => {
+        _handleSolutionize(el, el.classList.contains("is_solution"));
+    });
+});
+
 function _handleClick(el, positive) {
     if (!loggedIn) {
         window.location.href = "/users/signin?r=" + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
@@ -84,4 +90,40 @@ function unvote(questionid, answerId) {
         },
         body: formdata
     }));
+}
+
+function solutionize(quesitonid, answerId) {
+    const formdata = new URLSearchParams();
+    formdata.append("question", questionid);
+    formdata.append("answer", answerId);
+    return voteRequest(fetch(`/solutionize`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formdata
+    }));
+}
+
+function unsolutionize(questionId, answerId) {
+    const formdata = new URLSearchParams();
+    formdata.append("question", questionid);
+    formdata.append("answer", answerId);
+    return voteRequest(fetch(`/unsolutionize`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formdata
+    }));
+}
+
+function _handleSolutionize(el, shouldSolutionize) {
+    const answerId = el.parentElement.getAttribute('data-answer-id');
+
+    if (shouldSolutionize) {
+        solutionize(questionid, answerId).then(_ => el.classList.add("is_solution"));
+    } else {
+        unsolutionize(questionid, answerId).then(_ => el.classList.remove("is_solution"));
+    }
 }

@@ -67,7 +67,7 @@ class Answer {
 
     static async create(body, site, question, creator) {
         const {row} = await conn.singleRow("INSERT INTO answers (content, site_id, initial_question_id, creator_username, creator_id) VALUES ($1,$2,$3,$4,$5) RETURNING id AS insertid", [body, site, question, creator.username, creator.id]);
-        const answer = new Answer(row.insertId);
+        const answer = new Answer(row.insertid);
         if (question) {
             await answer.link(question);
         }
