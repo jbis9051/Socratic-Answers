@@ -109,8 +109,10 @@
     font-size: 38px;
     color: #acacac;
 }
-
-.answer--voting .solution_mark.is_solution, .answer--voting .solution_mark:hover {
+.answer--voting .solution_mark:hover {
+    color: #349434;
+}
+.answer--voting .solution_mark.is_solution {
     color: #51e851;
 }
 

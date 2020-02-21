@@ -14,7 +14,7 @@ document.querySelectorAll('.downvote').forEach(el => {
 
 document.querySelectorAll('.solution_mark').forEach(el => {
     el.addEventListener("click", async evt => {
-        _handleSolutionize(el, el.classList.contains("is_solution"));
+        _handleSolutionize(el, !el.classList.contains("is_solution"));
     });
 });
 
