@@ -279,8 +279,9 @@ class User {
 
     static async resetTokenExist(token) {
         const {row} = await conn.singleRow(`SELECT code
-                                      FROM "password-reset"
-                                      WHERE code = $1`, [token]);
+                                            FROM "password-reset"
+                                            WHERE code = $1
+                                              AND created <= CURRENT_DATE - INTERVAL 3 DAY`, [token]);
         if (!row) {
             return false;
         }
@@ -289,8 +290,8 @@ class User {
 
     static async resetPassword(token, password) {
         const {row} = await conn.singleRow(`SELECT id, code, userid
-                                      FROM "password-reset"
-                                      WHERE code = $1`, [token]);
+                                            FROM "password-reset"
+                                            WHERE code = $1`, [token]);
         if (!row) {
             return false;
         }

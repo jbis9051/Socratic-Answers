@@ -6,7 +6,7 @@ module.exports = async function tokenizeResponse(user, res) {
         expires: date,
         httpOnly: true,
         path: '/',
-        secure: false,
+        secure: true,
         sameSite: 'Strict',
         domain: '.socraticanswers.com'
     });

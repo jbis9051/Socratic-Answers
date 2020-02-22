@@ -27,14 +27,27 @@ Site.getAllSites().then(allsites => {
     })
 });
 
+function getSubDomains(host, offset = 2) {
+    const split = host.split(".").reverse();
+    if (split[0] !== "com" || split[1] !== "socraticanswers") {
+        return false;
+    }
+    return split.slice(2);
+}
+
 
 router.all('*', function (req, res, next) {
-    if (req.subdomains.length === 0) {
+    const subdomains = getSubDomains(req.get("X-Forwarded-Host"));
+    if (!subdomains) {
+        res.send("Huh?");
+        return;
+    }
+    if (subdomains.length === 0) {
         req.site = -1;
         res.locals.site = -1;
         return homeRouter(req, res, next);
     }
-    const subString = req.subdomains.reverse().join(".");
+    const subString = subdomains.reverse().join(".");
     if (!sites.hasOwnProperty(subString)) {
         next(404);
         return;

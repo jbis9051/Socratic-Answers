@@ -4,7 +4,7 @@ CREATE TABLE users
     username              VARCHAR(256) NOT NULL,
     email                 VARCHAR(256) NOT NULL,
     password              VARCHAR(256) NOT NULL,
-    last_changed_username TIMESTAMPTZ  NOT NULL DEFAULT NULL,
+    last_changed_username TIMESTAMPTZ           DEFAULT NULL,
     created               TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     bio                   TEXT                  DEFAULT 'This user is a ghost. 👻',
     location              VARCHAR(256)          DEFAULT NULL,

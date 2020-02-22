@@ -1,6 +1,7 @@
 const config = require("../../config.json");
 
-const mailgun = null;  //require('mailgun-js')(config.mailgun);
+const mailgun = require('mailgun-js')(config.mailgun);
+
 /**
  *
  * @type {Mailgun}
@@ -16,11 +17,11 @@ module.exports = {
          * @param from
          * @return {Promise<unknown>}
          */
-        simpleText: (to, subject, text, from = "Sitename") => {
+        simpleText: (to, subject, text, from = "Socratic Answers") => {
             return new Promise((resolve, reject) => {
-                console.log(`${subject}: ${text}`); // for debug
+             /*   console.log(`${subject}: ${text}`); // for debug
                 resolve();
-                return;
+                return;*/
                 mailgun.messages().send({
                     from: `${from} <noreply@${config.mailgun.domain}>`,
                     to: to,
