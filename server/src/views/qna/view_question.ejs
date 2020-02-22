@@ -50,7 +50,7 @@
                     </svg>
                     <% if(answer.is_solution) { %>
                         <span class="solution_mark is_solution">✓</span>
-                    <% } else if(answer.creator.id === currentUser.id){ %>
+                    <% } else if(currentUser && answer.creator.id === currentUser.id){ %>
                         <span class="solution_mark">✓</span>
                     <% } %>
                 </div>

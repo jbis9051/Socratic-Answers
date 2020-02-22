@@ -1,8 +1,8 @@
-const {query} = require('express-validator');
+const {query, body} = require('express-validator');
 
 module.exports = [
     query('token')
         .notEmpty().withMessage("Invalid token").bail(),
-    query('password')
+    body('password')
         .notEmpty().withMessage("Invalid password").bail()
 ];

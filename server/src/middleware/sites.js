@@ -24,6 +24,7 @@ Site.getAllSites().then(allsites => {
                 site.meta_site = meta_site;
             }
         }
+        site.is_qa = true;
     })
 });
 
@@ -43,8 +44,8 @@ router.all('*', function (req, res, next) {
         return;
     }
     if (subdomains.length === 0) {
-        req.site = -1;
-        res.locals.site = -1;
+        req.site = { name: "Socratic", is_qa: false};
+        res.locals.site = req.site;
         return homeRouter(req, res, next);
     }
     const subString = subdomains.reverse().join(".");

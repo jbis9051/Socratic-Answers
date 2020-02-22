@@ -32,8 +32,11 @@ router.get('/reset', redirUsers, ResetPasswordTokenCheck, async function (req, r
 });
 
 router.post('/reset', redirUsers, ResetPasswordResetForm, async function (req, res, next) {
+    if(req.validationErrors[0].length > 1){
+        return next();
+    }
     const user = await User.resetPassword(req.body.token, req.body.password);
-    if(req.validationErrors[0].length > 1 || !user){
+    if(!user){
         return next();
     }
     await tokenizeResponse(user, res);

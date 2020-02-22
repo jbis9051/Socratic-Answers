@@ -188,7 +188,7 @@ class User {
     }
 
     removeTokensOldThan(days) {
-        return conn.query("DELETE FROM tokens WHERE user_id = $1 AND created <= CURRENT_DATE - INTERVAL $2 DAY", [this.id, days.toString()]);
+        return conn.query("DELETE FROM tokens WHERE user_id = $1 AND created >= CURRENT_DATE - INTERVAL $2 DAY", [this.id, days.toString()]);
     }
 
     async addToken() {
@@ -281,7 +281,7 @@ class User {
         const {row} = await conn.singleRow(`SELECT code
                                             FROM "password-reset"
                                             WHERE code = $1
-                                              AND created <= CURRENT_DATE - INTERVAL 3 DAY`, [token]);
+                                              AND created >= CURRENT_DATE - INTERVAL '3' DAY`, [token]);
         if (!row) {
             return false;
         }
@@ -289,15 +289,12 @@ class User {
     }
 
     static async resetPassword(token, password) {
+        if (!await User.resetTokenExist(token)) {
+            return false;
+        }
         const {row} = await conn.singleRow(`SELECT id, code, userid
                                             FROM "password-reset"
                                             WHERE code = $1`, [token]);
-        if (!row) {
-            return false;
-        }
-        if (!(token.length === row.code.length && crypto.timingSafeEqual(Buffer.from(row.code), Buffer.from(token)))) {
-            return false;
-        }
         const hash = await bcrypt.hash(password, 10);
         await conn.query(`UPDATE users
                           SET password = $2
@@ -305,7 +302,7 @@ class User {
         await conn.query(`DELETE
                           FROM "password-reset"
                           WHERE id = $1`, [row.id]);
-        return await User.FromId(row.id);
+        return await User.FromId(row.userid);
     }
 
 }

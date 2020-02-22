@@ -17,7 +17,9 @@
                 <span class="username"><%= currentUser.username %></span>
             </a>
         <% } %>
-        <a href="/questions/ask" class="nav-button ask-question ">Ask A Question!</a>
+        <% if(site.is_qa) { %>
+            <a href="/questions/ask" class="nav-button ask-question ">Ask A Question!</a>
+        <% } %>
         <div id="topbarHamburger" class="topbar-hamburger fa fa-bars"></div>
     </div>
 
@@ -25,9 +27,12 @@
         <nav class="nav-list">
             <span class="nav-list--title"><%= site.name %> Answers</span>
             <div class="nav-list--items">
-                <a href="/questions" class="nav-list-item">Questions</a>
+                <% if(site.is_qa) { %>
+                    <a href="/questions" class="nav-list-item">Questions</a>
+                <% } %>
                 <% if(site.parent_site) { %>
-                    <a href="https://<%= site.parent_site.subdomain %>.socraticanswers.com" class="nav-list-item">Parent</a>
+                    <a href="https://<%= site.parent_site.subdomain %>.socraticanswers.com"
+                       class="nav-list-item">Parent</a>
                 <% } %>
                 <% if(site.meta_site) { %>
                     <a href="https://<%= site.meta_site.subdomain %>.socraticanswers.com" class="nav-list-item">Meta</a>
