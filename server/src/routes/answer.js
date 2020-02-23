@@ -5,26 +5,26 @@ const csrfToken = require('../middleware/csurf');
 
 const Answer = require('../models/Answer');
 
-const {idParam, AnswerCreateForm, AnswerEditForm}  = require('../validation');
+const {idParam, AnswerCreateForm, AnswerEditForm} = require('../validation');
 
-router.get('/:id', idParam,  async function (req, res, next) {
+router.get('/:id', idParam, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         next();
         return;
     }
-    const answer  = await Answer.FromId(req.params.id);
+    const answer = await Answer.FromId(req.params.id);
     if (!answer) {
         next();
         return;
     }
     await answer.fillContent();
-    res.render('qna/answer/view', {answer, linkedQuestions: [] });
+    res.render('qna/answer/view', {answer, linkedQuestions: []});
 });
 
-router.post('/create', AnswerCreateForm,async function (req, res, next) {
+router.post('/create', AnswerCreateForm, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.send(JSON.stringify(req.validationErrors));
-      //  next(); //TODO show error
+        //  next(); //TODO show error
         return;
     }
     await Answer.create(req.body.body, req.site.id, req.body._question, req.user);
@@ -36,7 +36,7 @@ router.get('/edit/:id', idParam, csrfToken, async function (req, res, next) {
         next();
         return;
     }
-    const answer  = await Answer.FromId(req.params.id);
+    const answer = await Answer.FromId(req.params.id);
     if (!answer) {
         next();
         return;
@@ -55,11 +55,11 @@ router.post('/edit/:id', csrfToken, idParam, AnswerEditForm, async function (req
         return;
     }
     const answer = await Answer.FromId(req.params.id);
-    if(!answer){
+    if (!answer) {
         next();
         return;
     }
-    await answer.edit(req.body.body);
+    await answer.edit(req.body.body, req.user.username, req.user.id);
     res.redirect("/answers/" + answer.id);
 });
 
