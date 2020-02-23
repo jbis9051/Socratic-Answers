@@ -117,6 +117,15 @@ class Question {
         await this.archive(title, this.tag_string, editorUsername, editorId);
         await conn.query("UPDATE question SET title = $1, content = $2, tag_string = $3, last_modified = CURRENT_TIMESTAMP WHERE id = $4", [this.title, this.content, this.tag_string, this.id]);
     }
+
+    static async getLinks(answerId){
+        const {rows} = await conn.multiRow("SELECT question_id, title FROM questions_join_answers INNER JOIN question q ON questions_join_answers.question_id = q.id WHERE answer_id = $1", [answerId]);
+        return rows.map(row => {
+           const q = new Question(row.question_id);
+           q.title = row.title;
+           return q;
+        });
+    }
 }
 
 module.exports = Question;

@@ -4,6 +4,7 @@ const router = express.Router();
 const csrfToken = require('../middleware/csurf');
 
 const Answer = require('../models/Answer');
+const Question = require('../models/Question');
 
 const {idParam, AnswerCreateForm, AnswerEditForm} = require('../validation');
 
@@ -18,7 +19,8 @@ router.get('/:id', idParam, async function (req, res, next) {
         return;
     }
     await answer.fillContent();
-    res.render('qna/answer/view', {answer, linkedQuestions: []});
+    const links = await Question.getLinks(answer.id);
+    res.render('qna/answer/view', {answer, linkedQuestions: links});
 });
 
 router.post('/create', AnswerCreateForm, async function (req, res, next) {
