@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <title>Password Reset Input</title>
+</head>
+<body>
+<%- include('../components/common/topbar' ) %>
+<div class="form-wrapper">
+    <form class="form" method="post">
+        <label>New Password</label>
+        <input name="password" type="text">
+        <input name="token" value="<%= token %>" type="hidden">
+        <button type="submit" class="btn">Reset</button>
+    </form>
+</div>
+</body>
+</html>

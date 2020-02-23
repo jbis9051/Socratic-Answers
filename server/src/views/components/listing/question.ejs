@@ -1,0 +1,28 @@
+<div class="question">
+    <div class="question-metadata">
+        <div class="<%= question.solutions > 0 ? "solutions" : "" %>">
+            <span class="question-solutions"><%= question.solutions %></span>
+            <span class="question-metadata-label">Solutions</span>
+        </div>
+        <div>
+            <span class="question-answers"><%= question.answers %></span>
+            <span class="question-metadata-label">Answers</span>
+        </div>
+    </div>
+    <div class="question-content">
+        <div>
+            <a href="/questions/<%= question.id %>/<%= friendlyURLPath(question.title) %>"
+               class="question-title"><%= question.title %></a>
+            <div class="question-subtext">
+                <span>created <%= question.getCreatedFriendlyTimeAgo() %> by</span>
+                <a href="/users/<%= question.creator.id %>"
+                   class="question-creator"><%= question.creator.username %></a>
+            </div>
+        </div>
+        <div class="question-tags">
+            <% question.taglist.forEach(tag => { %>
+                <span class="question-tag"><%= tag %></span>
+            <% }); %>
+        </div>
+    </div>
+</div>

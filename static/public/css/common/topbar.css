@@ -1,0 +1,201 @@
+.top-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: red;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    overflow: auto;
+}
+.top-bar {
+    position: fixed;
+    top: 40px; /* 0 */
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: orange 3px solid;
+    border-bottom: #111111 1px solid;
+    overflow: visible;
+    background: #2c2a35;
+    z-index: 100;
+}
+
+@media screen  and  (max-width: 500px){
+    .top-bar {
+        flex-direction: column;
+        height: 90px;
+    }
+}
+
+
+.right-stack {
+    margin: 5px;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.nav-button, .btn {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 0.05rem;
+    color: white;
+    background: #0d78c3;
+    font-size: 15px;
+    border: none;
+}
+
+/*
+.nav-button:hover, .btn:hover {
+    color: #d2d2d2;
+    background: #094c7a;
+}
+*/
+
+.nav-button, .btn {
+    color: white;
+    background: #ed9900;
+    margin: 5px;
+    border-radius: 0.25rem;
+}
+
+.nav-button:hover, .btn:hover {
+    color: #d2d2d2;
+    background: #975e00;
+}
+
+.user-badge {
+    height: 100%;
+    display: inline-block;
+    padding: 10px;
+}
+
+.user-badge img {
+    width: 35px;
+    height: 35px;
+}
+
+.user-badge .username {
+    font-size: 15px;
+    margin: 7px;
+}
+
+.user-badge:hover {
+    text-decoration: none;
+}
+
+.user-badge:hover {
+    background: #29282e;
+}
+
+.topbar-hamburger {
+    font-size: 22px;
+    padding: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+#topbarExpand {
+    display: none;
+    position: absolute;
+    top: 56px; /* this isn't magic! | 60px (height of the top bar) - 3px (height of the top border) - 1px (height of the bottom border) */
+    right: 0;
+    background: #1c1b21;
+    width: 100%;
+    max-width: 300px;
+}
+
+#topbarExpand.active {
+    display: block;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 2px rgba(6, 7, 6, 0.4);
+}
+
+.nav-list--title {
+    display: block;
+    font-weight: 700;
+    background: #464451;
+    padding-left: 5px;
+    color: #efefef;
+    font-size: 13px;
+}
+
+.nav-list--items {
+
+}
+
+.nav-list-item {
+    display: block;
+    width: 100%;
+    padding: 5px 10px;
+    color: #0e9aef;
+    font-size: 15px;
+}
+
+.nav-list--divider {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #efefef;
+}
+
+.nav--logout-button {
+    color: #714f00;
+}
+
+.nav--logout-button:hover {
+    color: #d28700;
+}
+
+.nav-list-item:hover {
+    text-decoration: none;
+    background: #232127;
+}
+
+.site-graphics {
+    padding: 5px 10px;
+    color: #dbdbdb;
+}
+
+.site-graphics span:hover {
+    text-decoration: none;
+}
+
+.nav-button ,.ask-question {
+    background: #0e9aef;
+    border-radius: 0.25rem;
+    padding: 8px;
+    font-size: 13px;
+}
+.nav-button:hover,.ask-question:hover {
+    background: #0b5e99;
+}
+
+/*
+.nav-list {
+position: absolute;
+background:white;
+top: 50px;
+margin: 0;
+padding: 5px;
+display: flex;
+flex-direction: column;
+max-height: 100vh;
+width: 100%;
+}
+
+
+
+ */

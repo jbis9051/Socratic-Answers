@@ -1,0 +1,45 @@
+.content {
+    padding: 20px;
+    background: #2c2a35;
+    width: 90%;
+    margin: 20px auto;
+    border-radius: 0.25rem;
+}
+
+.question-wrapper label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.question--title-input, .question--body-input, .question--tags-input {
+    display: block;
+    border-radius: 0.25rem;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.question--body-input {
+    height: 250px;
+}
+
+.askit-submit {
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 0.25rem;
+}
+
+.question-tags {
+    min-height: 40px;
+    white-space: normal;
+}
+
+.question-tag{
+    margin-top: 10px;
+}
+
+.question-tag:hover {
+    color: #4eb8ff;
+}

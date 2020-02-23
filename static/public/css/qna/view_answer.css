@@ -1,0 +1,19 @@
+.main-content {
+    padding: 17px;
+}
+
+h2 {
+    margin: 5px 0;
+}
+
+.answers--body--input {
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    background: #fcfcfc;
+    border: solid 1px rgba(221, 221, 221, 0.98);
+    box-sizing: border-box;
+    border-radius: 0.25rem;
+    height: 200px;
+    padding: 10px 5px 5px;
+}

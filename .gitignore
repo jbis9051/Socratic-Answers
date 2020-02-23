@@ -1,0 +1,12 @@
+.DS_Store
+
+/.idea/
+
+/server/config.json
+
+/node_modules/
+
+/server/node_modules/
+/static/node_modules/
+
+/static/build/

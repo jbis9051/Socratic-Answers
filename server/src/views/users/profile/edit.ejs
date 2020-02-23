@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/common/tabs.css">
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/users/profile.css">
+    <title><%= user.username %>'s Profile</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="main-content">
+    <%- include('./components/tabs') %>
+
+    <form id="form" method="post">
+        <div class="profile-content">
+            <% errors.forEach(error => { %>
+                <span class="error"><%= error %></span>
+            <% }); %>
+            <div class="profile-top">
+                <div class="profile-image-wrapper">
+                    <img height="164" width="164" src="<%= user.profile_image %>">
+                    <span class="change-image-caption">Change Image</span>
+                    <input id="fileInput" hidden type="file">
+                    <input id="profileURL" name="profile_image" value="<%= user.profile_image %>" type="hidden">
+                </div>
+                <div class="profile-meta-wrapper edit">
+                    <input name="username" disabled class="username" placeholder="Username"
+                           value="<%= user.username %>">
+                    <ul>
+                        <li><input name="location" placeholder="Location" value="<%= user.location %>"></li>
+                        <li><input name="website" placeholder="Website" value="<%= user.website %>"></li>
+                        <li><input name="github" placeholder="GitHub" value="<%= user.github %>"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="checkbox-flex">
+                <input type="checkbox" class="checkbox" <%= user.acceptEmails ? "checked" : "" %> name="accept-spam"
+                       id="accept-spam">
+                <label class="email-opt" for="accept-spam">Opt-in to receiving updates on how development is coming
+                    along and different changes made to the site. You will not be spammed with any promotional content.
+                    You can change this in your user settings.</label>
+            </div>
+            <div class="profile-content-wrapper">
+                <textarea id="bioInput" name="bio" class="profile-bio edit"><%= user.bio %></textarea>
+                <hr>
+                <div id="bioRender"></div>
+            </div>
+        </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="submit" value="Submit" class="btn">
+    </form>
+
+</div>
+</body>
+</html>
+
+
+<script src="/js/markdown-editor.js"></script>
+<script src="/js/users/profile_edit.js"></script>

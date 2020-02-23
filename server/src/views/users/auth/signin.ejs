@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/users/form.css">
+    <link rel="stylesheet" href="/css/users/signup.css">
+    <title>Sign Up</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="form-wrapper">
+    <img alt="logo" class="logo" src="">
+    <form class="form" action="signin?r=<%= redir || "" %>" method="post">
+        <% if(errorMessage) { %>
+            <span class="error"><%= errorMessage %></span>
+        <% } %>
+        <% if(redir) { %>
+            <span class="error">Please sign in to complete this action or to access this page.</span>
+        <% } %>
+        <label>Email</label>
+        <input name="email" type="text">
+        <label>Password</label>
+        <input name="password" type="password">
+
+        <a href="/resetpassword" class="reset_link">I should have used a password manager (forgot password)</a>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="btn">Login</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+.md-body blockquote {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    background-color: #d0c7ae;
+    color: black;
+    border-left: 4px solid #ffde30;
+    margin-left: 5px;
+}
+.hljs, .md-body code {
+    background: #373737;
+    border-radius: 0.25rem;
+    border: 1px solid gray;
+}
+
+.md-body code:not(.hljs) {
+    padding: 2px;
+    background: #5b5b5b;
+}

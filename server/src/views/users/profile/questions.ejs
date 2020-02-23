@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/common/tabs.css">
+    <link rel="stylesheet" href="/css/index/question-list.css">
+    <link rel="stylesheet" href="/css/users/listing.css">
+    <title><%= user.username %>'s Profile</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="main-content">
+    <%- include('./components/tabs' ) %>
+    <div class="tabs">
+        <a href="/users/questions?sort=newest" class="tab <%= sorting === "newest" ? "active" : "" %>">Newest</a>
+    </div>
+    <div class="listing-content">
+        <h1><%= user.username %>'s Questions</h1>
+        <% if(questionCount === 0) { %>
+            <span>This user doesn't have any questions.</span>
+        <% } else { %>
+            <% questions.forEach(question => { %>
+                <%- include('../../components/listing/question', {question: question }) %>
+            <% }) %>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>

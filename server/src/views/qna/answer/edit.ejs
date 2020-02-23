@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/md.css">
+    <link rel="stylesheet" href="/css/qna/view_question.css">
+    <link rel="stylesheet" href="/css/qna/view_answer.css">
+    <script src="/js/markdown-editor.js"></script>
+    <title>Edit | <%= answer.content.substring(0, 7) %>... | Socratic Answers</title>
+</head>
+<body>
+<%- include('../../components/common/topbar' ) %>
+<div class="main-content content-background">
+    <h2>Edit Answer Content</h2>
+    <form method="post">
+        <textarea class="answers--body--input" name="body" id="input"><%- answer.content %></textarea>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="submit" value="Submit" class="btn">
+        <div class="answer--preview md-body" id="answer-preview"></div>
+        <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+        <div class="post--operations">
+            <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a>
+        </div>
+        <span class="author">Authored by <a
+                    href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
+    </form>
+</div>
+<script src="/js/qna/edit_answer.js"></script>
+</body>
+</html>
