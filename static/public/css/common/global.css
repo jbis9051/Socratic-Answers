@@ -6,6 +6,12 @@ body {
     color: #e2e2e2;
 }
 
+@media screen  and  (max-width: 500px){
+    body {
+        padding-top: 130px; /* 90px */
+    }
+}
+
 a {
     color: #37c9ff;
     text-decoration: none;

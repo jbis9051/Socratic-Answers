@@ -6,7 +6,8 @@
 }
 
 .form {
-    width: 300px;
+    width: 90%;
+    max-width: 300px;
     border-radius: 0.25rem;
     padding: 25px;
     margin: 0 auto;
@@ -58,4 +59,16 @@ form a:hover {
 
 .btn {
     font-size: 19px;
+}
+
+.checkbox-flex {
+    display: flex;
+}
+
+.checkbox-flex label {
+    font-size: 13px;
+}
+
+.checkbox-flex input[type=checkbox] {
+    width: 20px;
 }

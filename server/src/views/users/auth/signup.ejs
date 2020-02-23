@@ -24,11 +24,10 @@
         <input name="password" id="password" type="password">
         <span class="instruction">Password must be greater than 8 characters and must have at least one uppercase and lowercase letter. </span>
         <div class="checkbox-flex">
-            <input type="checkbox" class="checkbox" checked id="accept-spam"><label class="email-opt" for="accept-spam">Opt-in
-                to
-                receiving updates on how
-                development is coming along and different changes made to the site. You will not be spammed with any
-                promotional content. You can change this in your user settings.</label>
+            <input type="checkbox" class="checkbox" checked name="accept-spam" id="accept-spam">
+            <label class="email-opt" for="accept-spam">Opt-in to receiving updates on how development is coming
+                along and different changes made to the site. You will not be spammed with any promotional content.
+                You can change this in your user settings.</label>
         </div>
         <button type="submit" class="btn">Sign Up</button>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">

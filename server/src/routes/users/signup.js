@@ -44,7 +44,7 @@ router.post("/signup", redirUsers,  SignUpForm,  csrfProtection, async function 
         return;
     }
 
-    const user = await User.signUp(req.body.username, req.body.email, req.body.password);
+    const user = await User.signUp(req.body.username, req.body.email, req.body.password, !!req.body['accept-spam']);
     user.sendConfirmEmail(req.body.email)
         .then(_ => {
             res.render('users/auth/confirm-sent', {error: null});

@@ -72,6 +72,7 @@ router.post('/edit', ProfileEditForm, csrfProtection, async function (req, res, 
         return;
     }
     await req.user.updateBioFields(req.body.bio, req.body.location, req.body.website, req.body.github);
+    await req.user.updatePreferences(!!req.body['accept-spam']);
     res.redirect(`/users/${req.user.id}/${req.app.locals.friendlyURLPath(req.user.username)}`);
 });
 router.all('/edit', requireUser, csrfProtection, async function (req, res, next) {

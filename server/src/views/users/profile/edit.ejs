@@ -35,6 +35,13 @@
                     </ul>
                 </div>
             </div>
+            <div class="checkbox-flex">
+                <input type="checkbox" class="checkbox" <%= user.acceptEmails ? "checked" : "" %> name="accept-spam"
+                       id="accept-spam">
+                <label class="email-opt" for="accept-spam">Opt-in to receiving updates on how development is coming
+                    along and different changes made to the site. You will not be spammed with any promotional content.
+                    You can change this in your user settings.</label>
+            </div>
             <div class="profile-content-wrapper">
                 <textarea id="bioInput" name="bio" class="profile-bio edit"><%= user.bio %></textarea>
                 <hr>

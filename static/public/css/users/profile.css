@@ -86,7 +86,3 @@ textarea {
         margin: 25px;
     }
 }
-
-.profile-content input {
-    width: calc(100% - 5px);
-}

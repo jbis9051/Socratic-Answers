@@ -22,6 +22,7 @@ class User {
             }
             this.username = row["username"];
             this.created = row.created;
+            this.acceptEmails = row["email_updates"];
         }
     }
 
@@ -43,6 +44,10 @@ class User {
         this.bio = bio;
         this.website = website;
         this.github = github;
+    }
+
+    async updatePreferences(acceptEmails){
+        await conn.query("UPDATE users SET email_updates = $1 WHERE id = $2", [acceptEmails, this.id]);
     }
 
     /* getters */
@@ -157,9 +162,9 @@ class User {
 
     /* signup */
 
-    static async signUp(username, email, password) {
+    static async signUp(username, email, password, acceptEmails) {
         const hash = await bcrypt.hash(password, 10);
-        const {row} = await conn.singleRow("INSERT INTO users (username,password,email) VALUES ($1,$2,$3) RETURNING id AS insertId", [username, hash, email]);
+        const {row} = await conn.singleRow("INSERT INTO users (username,password,email,email_updates) VALUES ($1,$2,$3, $4) RETURNING id AS insertId", [username, hash, email, acceptEmails]);
         return await User.FromId(row.insertid);
     }
 
