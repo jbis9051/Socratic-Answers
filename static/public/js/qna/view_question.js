@@ -48,7 +48,6 @@ function _handleClick(el, positive) {
         vote(questionid, answerId, positive).then(_ => {
             el.classList.add("selected");
             addToVote(main, 1);
-            addToVote(opp, -1);
         });
     }
 }

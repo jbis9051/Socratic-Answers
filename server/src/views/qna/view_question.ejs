@@ -14,7 +14,7 @@
 <div class="main-content question-wrapper">
     <div class="question">
         <h1 class="question--title"><%= question.title %></h1>
-        <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (modified <%= question.last_modified.toISOString() %>)</span>
+        <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (<a href="/questions/history/<%= question.id %>">modified <%= question.last_modified.toISOString() %>)</a></span>
         <div class="question--body md-body">
             <%- question.renderedContent %>
         </div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="answer--meta">
-                <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> (modified <%= answer.last_modified.toISOString() %>)</span>
+                <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> <a href="/answers/history/<%=answer.id %>">(modified <%= answer.last_modified.toISOString() %>)</a></span>
                 <div class="post--operations">
                     <% if(answer.initial_question_id === null) { %>
                         <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /

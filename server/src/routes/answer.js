@@ -65,9 +65,15 @@ router.post('/edit/:id', csrfToken, idParam, AnswerEditForm, async function (req
     res.redirect("/answers/" + answer.id);
 });
 
-router.get("/history/:id", async function (req, res, next) {
+router.get("/history/:id", idParam, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
+    }
     const answer = new Answer(req.params.id);
     const history = await answer.getHistory();
+    if(history.length === 0){
+        return next();
+    }
     res.render('qna/answer/history', {answer, history});
 });
 

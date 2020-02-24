@@ -7,6 +7,7 @@ module.exports = [
     body('tags')
         .notEmpty().withMessage("You must have at least one tag").bail()
         .not().matches(/[^\w\d-_, ]/g).withMessage("You have illegal characters in your tags").bail()
+        .isLength({max: 256}).withMessage("Please use less tags or shorter tags.")
         .customSanitizer(value => value.split(",").map(tag => tag.trim().replace(/ /g, "-"))), //TODO length check
     body('body')
         .notEmpty().withMessage("Your question body cannot be empty").bail()

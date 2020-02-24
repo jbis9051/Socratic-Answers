@@ -34,6 +34,19 @@ router.post('/ask', requireUser, csrfToken, QuestionAskEditForm, async function 
     res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
 });
 
+
+router.get("/history/:id", idParam, async function (req, res, next) {
+    if (req.validationErrors[0].length > 0) {
+        return next();
+    }
+    const question = new Question(req.params.id);
+    const history = await question.getHistory();
+    if (history.length === 0) {
+        return next();
+    }
+    res.render('qna/qhistory', {question, history});
+});
+
 router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
@@ -60,7 +73,7 @@ router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, a
     if (req.validationErrors[1].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
-            errors: errors,
+            errors: req.validationErrors[1].map(error => error.msg),
             body: req.body.body,
             title: req.body.title,
             tags: req.body.tags.join(", "),
@@ -121,10 +134,5 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
     res.render('qna/view_question', {question, answers});
 });
 
-router.get("/history/:id", async function (req, res, next) {
-    const question = new Question(req.params.id);
-    const history = await question.getHistory();
-    res.render('qna/qhistory', {question, history});
-});
 
 module.exports = router;

@@ -3,11 +3,12 @@ const {validationResult} = require('express-validator');
 function validationMiddlewareWrapper(validationFunctions) {
     validationFunctions.push(function (req, res, next) {
         const validationErrors = validationResult(req).errors;
-        if (Array.isArray(req.validationErrors)) {
+        if (Array.isArray(req.validationErrors) && req.route === req.validationRoute) {
             req.validationErrors.push(validationErrors);
             next();
             return;
         }
+        req.validationRoute = req.route;
         req.validationErrors = [validationErrors];
         next();
     });
