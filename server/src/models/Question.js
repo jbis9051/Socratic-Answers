@@ -104,12 +104,15 @@ class Question {
     }
 
     static async create(title, body, tags, siteid, creator) {
-        const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tags.map(tag => '<' + tag + '>').join("")]);
-        return await Question.FromId(row.insertid);
+        const tagString = tags.map(tag => '<' + tag + '>').join("");
+        const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tagString]);
+        const question = await Question.FromId(row.insertid);
+        await question.archive(title, body, tagString, creator.username, creator.id);
+        return question;
     }
 
-    archive(content, body, tagString, editorUsername, editorId) {
-        return conn.query("INSERT INTO question_edit_history (title, content, tag_string, editor_id, editor_username, question_id) VALUES ($1,$2,$3,$4, $5, $6)", [content, body, tagString, editorId, editorUsername, this.id]);
+    archive(title, body, tagString, editorUsername, editorId) {
+        return conn.query("INSERT INTO question_edit_history (title, content, tag_string, editor_id, editor_username, question_id) VALUES ($1,$2,$3,$4, $5, $6)", [title, body, tagString, editorId, editorUsername, this.id]);
     }
 
     async edit(title, body, tags, editorUsername, editorId) {
