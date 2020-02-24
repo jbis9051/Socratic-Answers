@@ -36,38 +36,6 @@ router.post('/vote', VoteValidation, async function (req, res, next) {
     res.json({success: true, error: ""});
 });
 
-router.post('solve', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
-    if (req.validationErrors[0].length > 0) {
-        res.status(400);
-        res.json({success: false, error: "Bad Input"});
-        return;
-    }
-
-    const answer = new Answer(req.body.answer);
-    const qaId = await answer.getQaId(req.body.question);
-
-    if (!qaId) {
-        res.status(422);
-        res.json({success: false, error: "Unable To Find Q-A Pair"});
-        return;
-    }
-
-    if (req.user.id !== answer.creator.id) {
-        res.status(401);
-        res.json({success: false, error: "Unauthorized"});
-        return;
-    }
-
-    await Answer.solve(qaId, req.body.solve === true);
-    res.json({success: true, error: ""});
-});
-
 router.post('/unvote', VoteValidation, async function (req, res, next) {
     if (!req.user) {
         res.status(401);

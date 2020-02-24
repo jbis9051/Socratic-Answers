@@ -1,4 +1,6 @@
-createEditor(document.querySelector('#answer-input'), document.querySelector('#answer-preview'));
+if (loggedIn) {
+    createEditor(document.querySelector('#answer-input'), document.querySelector('#answer-preview'));
+}
 
 document.querySelectorAll('.upvote').forEach(el => {
     el.addEventListener("click", async evt => {

@@ -15,7 +15,7 @@
     <div class="answers--body md-body">
         <%- answer.renderedContent %>
     </div>
-    <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+    <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> (modified <%= answer.last_modified.toISOString() %>)</span>
     <div class="post--operations">
         <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
         <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /

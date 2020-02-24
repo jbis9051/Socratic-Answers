@@ -24,7 +24,7 @@ class Question {
 
     static async FromId(id) {
         const question = new Question(id);
-        if(await question.init()){
+        if (await question.init()) {
             return question;
         }
         return undefined;
@@ -40,7 +40,7 @@ class Question {
 
     async fillContent() {
         const {row} = await conn.singleRow('SELECT content FROM question WHERE id = $1', [this.id]);
-        this.content =  row.content;
+        this.content = row.content;
         this.renderedContent = markdown.render(this.content);
     }
 
@@ -92,25 +92,39 @@ class Question {
         return answers.map(answer => {
             const answer2 = new Answer(answer.id);
             answer2._setAttributes(answer);
-            if(answer.answer_is_solution){
+            if (answer.answer_is_solution) {
                 answer2.is_solution = true;
             }
             return answer2;
         });
     }
 
-    static async create(title, body, tags, siteid, creator){
+    static async create(title, body, tags, siteid, creator) {
         const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tags.map(tag => '<' + tag + '>').join("")]);
         return await Question.FromId(row.insertid);
     }
-    async edit(title, body, tags){
+
+    archive(content, tagString, editorUsername, editorId) {
+        return conn.query("INSERT INTO question_edit_history (content, tag_string, editor_id, editor_username) VALUES ($1,$2,$3,$4)", [content, tagString, editorId, editorUsername]);
+    }
+
+    async edit(title, body, tags, editorUsername, editorId) {
         this.title = title;
         this.content = body;
         this.renderedContent = markdown.render(this.content);
         this.taglist = tags;
         this.tag_string = tags.map(tag => '<' + tag + '>').join("");
-
+        await this.archive(title, this.tag_string, editorUsername, editorId);
         await conn.query("UPDATE question SET title = $1, content = $2, tag_string = $3, last_modified = CURRENT_TIMESTAMP WHERE id = $4", [this.title, this.content, this.tag_string, this.id]);
+    }
+
+    static async getLinks(answerId){
+        const {rows} = await conn.multiRow("SELECT question_id, title FROM questions_join_answers INNER JOIN question q ON questions_join_answers.question_id = q.id WHERE answer_id = $1", [answerId]);
+        return rows.map(row => {
+           const q = new Question(row.question_id);
+           q.title = row.title;
+           return q;
+        });
     }
 }
 

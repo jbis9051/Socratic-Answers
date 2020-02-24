@@ -133,6 +133,15 @@
     fill: #999;
 }
 
+
+.answer--voting .arrow polygon:hover {
+    fill: #636363;
+}
+
 .answer--voting .arrow.selected polygon {
     fill: #ecbb32;
+}
+
+.clickable {
+    cursor: pointer;
 }

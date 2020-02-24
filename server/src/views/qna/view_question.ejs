@@ -14,7 +14,7 @@
 <div class="main-content question-wrapper">
     <div class="question">
         <h1 class="question--title"><%= question.title %></h1>
-        <span class="question--date"><%= question.getCreatedFriendlyTimeAgo() %> (<%= question.created.toISOString() %>)</span>
+        <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (modified <%= question.last_modified.toISOString() %>)</span>
         <div class="question--body md-body">
             <%- question.renderedContent %>
         </div>
@@ -38,20 +38,20 @@
         <div class="main-content answer">
             <div class="answer--split">
                 <div class="answer--voting" data-answer-id="<%= answer.id %>">
-                    <svg class="upvote arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
+                    <svg class="upvote clickable arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
                     </svg>
                     <span class="score positive">+<span><%= answer.votes.positives %></span></span>
                     <span class="score negative">-<span><%= answer.votes.negatives %></span></span>
-                    <svg class="downvote arrow <%= answer.userSelected === "downvote" ? "selected" : "" %>"
+                    <svg class="downvote clickable arrow <%= answer.userSelected === "downvote" ? "selected" : "" %>"
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon points="32 0 16 23.59 0 0 32 0"/>
                     </svg>
                     <% if(answer.is_solution) { %>
-                        <span class="solution_mark is_solution">✓</span>
-                    <% } else if(currentUser && answer.creator.id === currentUser.id){ %>
-                        <span class="solution_mark">✓</span>
+                        <span class="solution_mark is_solution clickable">✓</span>
+                    <% } else if(currentUser && question.creator.id === currentUser.id){ %>
+                        <span class="solution_mark clickable">✓</span>
                     <% } %>
                 </div>
                 <div class="answers--body md-body">
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="answer--meta">
-                <span class="answer--date"><%= answer.getCreatedFriendlyTimeAgo() %> (<%= answer.created.toISOString() %>)</span>
+                <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> (modified <%= answer.last_modified.toISOString() %>)</span>
                 <div class="post--operations">
                     <% if(answer.initial_question_id === null) { %>
                         <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /

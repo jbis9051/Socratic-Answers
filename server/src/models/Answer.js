@@ -84,8 +84,14 @@ class Answer {
         await conn.query("UPDATE question SET answers = answers - 1 WHERE id = $1", [quesitonid]);
     }
 
-    edit(body) {
-        return conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body, this.id]);
+    archive(content, editorUsername, editorId) {
+        return conn.query("INSERT INTO answer_edit_history (content, editor_id, editor_username) VALUES ($1,$2,$3)", [content, editorId, editorUsername]);
+    }
+
+
+    async edit(body, editorUsername, editorId) {
+        await this.archive(body, editorUsername, editorId);
+        await conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body, this.id]);
     }
 
     async getQaId(quesitonid) {
@@ -106,7 +112,7 @@ class Answer {
         }
     }
 
-    static solve(qaId, solve = true){
+    static solve(qaId, solve = true) {
         return conn.query("UPDATE questions_join_answers SET answer_is_solution = $1 WHERE id = $2", [solve, qaId])
     }
 

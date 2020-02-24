@@ -72,7 +72,7 @@ router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, a
     if(!question){
         return next();
     }
-    await question.edit(req.body.title, req.body.body, req.body.tags);
+    await question.edit(req.body.title, req.body.body, req.body.tags, req.user.username, req.user.id);
     res.redirect(`/questions/${question.id}/${friendlyURLPath(question.title)}`);
 });
 
