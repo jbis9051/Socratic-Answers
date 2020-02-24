@@ -61,7 +61,7 @@ async function voteRequest(fetchFunction) {
     const resp = await fetchFunction;
     const content = await resp.json();
     if (!content.success) {
-        console.error(content.error);
+        await createAlert("error", content.error);
         throw content.error;
     }
     return true;
@@ -72,7 +72,7 @@ function vote(questionid, answerId, upvote) {
     formdata.append("question", questionid);
     formdata.append("answer", answerId);
     formdata.append("upvote", upvote);
-    return voteRequest(fetch(`/vote`, {
+    return voteRequest(fetch(`/vote/vote`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -85,7 +85,7 @@ function unvote(questionid, answerId) {
     const formdata = new URLSearchParams();
     formdata.append("question", questionid);
     formdata.append("answer", answerId);
-    return voteRequest(fetch(`/unvote`, {
+    return voteRequest(fetch(`/vote/unvote`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -98,7 +98,7 @@ function solutionize(quesitonid, answerId) {
     const formdata = new URLSearchParams();
     formdata.append("question", questionid);
     formdata.append("answer", answerId);
-    return voteRequest(fetch(`/solutionize`, {
+    return voteRequest(fetch(`/vote/solutionize`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -111,7 +111,7 @@ function unsolutionize(questionId, answerId) {
     const formdata = new URLSearchParams();
     formdata.append("question", questionid);
     formdata.append("answer", answerId);
-    return voteRequest(fetch(`/unsolutionize`, {
+    return voteRequest(fetch(`/vote/unsolutionize`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

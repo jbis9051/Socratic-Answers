@@ -32,7 +32,7 @@
                     href="/users/<%= question.creator.id %>/<%= question.creator.id %>"><%= question.creator.username %></a></span>
     </div>
 </div>
-<span class="section-label answer-amount"><%= answers.length %> Answers</span>
+<span class="section-label answer-amount"><%= question.answers %> Answers</span>
 <div class="answers-wrapper">
     <% answers.forEach(answer => { %>
         <div class="main-content answer">

@@ -23,12 +23,18 @@ router.post('/vote', VoteValidation, async function (req, res, next) {
     const upvote = req.body.upvote === "true";
 
 
-    const answer = new Answer(req.body.answer);
+    const answer = await Answer.FromId(req.body.answer);
     const qaId = await answer.getQaId(req.body.question);
 
     if (!qaId) {
         res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
+        return;
+    }
+
+    if (req.user.id === answer.creator.id) {
+        res.status(401);
+        res.json({success: false, error: "You can't vote on your own post"});
         return;
     }
 
