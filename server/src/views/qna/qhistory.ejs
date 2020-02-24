@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include('../components/common/standard-head') %>
+    <link rel="stylesheet" href="/css/md.css">
+    <link rel="stylesheet" href="/css/qna/tags.css">
+    <link rel="stylesheet" href="/css/qna/view_question.css">
+    <title>Question <%= question.id %> History | Socratic Answers</title>
+</head>
+<body>
+<%- include('../components/common/topbar' ) %>
+<% history.forEach(edit => { %>
+    <div class="main-content content-background">
+        <span class="question--date">modified <%= edit.modification_string %> (modified <%= edit.modification_date.toISOString() %>)</span>
+        <h2 class="question--title"><%= edit.title %></h2>
+        <div class="question--body md-body">
+            <%- edit.renderedContent %>
+        </div>
+        <div class="question-tags">
+            <% edit.taglist.forEach(tag=> { %>
+                <span class="question-tag"><%= tag %></span>
+            <% }) %>
+        </div>
+        <!--div class="post--operations">
+            <a class="post--operation" href="/answers/revert/<%= edit.id %>">revert</a>
+        </div-->
+        <span class="author">Edited by <a
+                    href="/users/<%= edit.editor.id %>/<%= edit.editor.id %>"><%= edit.editor.username %></a></span>
+    </div>
+<% }); %>
+</body>
+</html>

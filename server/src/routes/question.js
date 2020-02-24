@@ -19,7 +19,7 @@ router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
 });
 
 router.post('/ask', requireUser, csrfToken, QuestionAskEditForm, async function (req, res, next) {
-     if (req.validationErrors[0].length > 0) {
+    if (req.validationErrors[0].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
             errors: req.validationErrors[0].map(error => error.msg),
@@ -39,7 +39,7 @@ router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, re
         return next();
     }
     const question = await Question.FromId(req.params.id);
-    if(!question){
+    if (!question) {
         return next();
     }
     await question.fillContent();
@@ -69,7 +69,7 @@ router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, a
         return;
     }
     const question = await Question.FromId(req.params.id);
-    if(!question){
+    if (!question) {
         return next();
     }
     await question.edit(req.body.title, req.body.body, req.body.tags, req.user.username, req.user.id);
@@ -88,7 +88,7 @@ router.get('/:id', idParam, async function (req, res, next) {
     res.redirect(`/questions/${req.params.id}/${req.app.locals.friendlyURLPath(title)}`);
 });
 
-router.get('/:id/:title', idParam,async function (req, res, next) {
+router.get('/:id/:title', idParam, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
     }
@@ -119,6 +119,12 @@ router.get('/:id/:title', idParam,async function (req, res, next) {
         }
     }));
     res.render('qna/view_question', {question, answers});
+});
+
+router.get("/history/:id", async function (req, res, next) {
+    const question = new Question(req.params.id);
+    const history = await question.getHistory();
+    res.render('qna/qhistory', {question, history});
 });
 
 module.exports = router;

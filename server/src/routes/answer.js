@@ -65,4 +65,10 @@ router.post('/edit/:id', csrfToken, idParam, AnswerEditForm, async function (req
     res.redirect("/answers/" + answer.id);
 });
 
+router.get("/history/:id", async function (req, res, next) {
+    const answer = new Answer(req.params.id);
+    const history = await answer.getHistory();
+    res.render('qna/answer/history', {answer, history});
+});
+
 module.exports = router;

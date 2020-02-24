@@ -67,8 +67,12 @@ class Question {
         if (obj.hasOwnProperty("taglist")) {
             this.taglist = obj.taglist;
         } else {
-            this.taglist = obj.tag_string ? Array.from(obj.tag_string.matchAll(/<([^ >]+)>/g)).map(arr => arr[1]) : [];
+            this.taglist = obj.tag_string ? Question.tagStringToArray(obj.tag_string) : [];
         }
+    }
+
+    static tagStringToArray(str) {
+        return Array.from(str.matchAll(/<([^ >]+)>/g)).map(arr => arr[1]);
     }
 
     static async getQuestions(siteid, limit = 20, offset = 0) {
@@ -104,8 +108,8 @@ class Question {
         return await Question.FromId(row.insertid);
     }
 
-    archive(content, tagString, editorUsername, editorId) {
-        return conn.query("INSERT INTO question_edit_history (content, tag_string, editor_id, editor_username) VALUES ($1,$2,$3,$4)", [content, tagString, editorId, editorUsername]);
+    archive(content, body, tagString, editorUsername, editorId) {
+        return conn.query("INSERT INTO question_edit_history (title, content, tag_string, editor_id, editor_username, question_id) VALUES ($1,$2,$3,$4, $5, $6)", [content, body, tagString, editorId, editorUsername, this.id]);
     }
 
     async edit(title, body, tags, editorUsername, editorId) {
@@ -114,16 +118,34 @@ class Question {
         this.renderedContent = markdown.render(this.content);
         this.taglist = tags;
         this.tag_string = tags.map(tag => '<' + tag + '>').join("");
-        await this.archive(title, this.tag_string, editorUsername, editorId);
+        await this.archive(title, body, this.tag_string, editorUsername, editorId);
         await conn.query("UPDATE question SET title = $1, content = $2, tag_string = $3, last_modified = CURRENT_TIMESTAMP WHERE id = $4", [this.title, this.content, this.tag_string, this.id]);
     }
 
-    static async getLinks(answerId){
+    static async getLinks(answerId) {
         const {rows} = await conn.multiRow("SELECT question_id, title FROM questions_join_answers INNER JOIN question q ON questions_join_answers.question_id = q.id WHERE answer_id = $1", [answerId]);
         return rows.map(row => {
-           const q = new Question(row.question_id);
-           q.title = row.title;
-           return q;
+            const q = new Question(row.question_id);
+            q.title = row.title;
+            return q;
+        });
+    }
+
+    async getHistory() {
+        const {rows} = await conn.multiRow("SELECT * FROM question_edit_history WHERE question_id = $1 ORDER BY modification_date DESC", [this.id]);
+        return rows.map(row => {
+            return {
+                title: row.title,
+                modification_string: timeAgo.format(row.modification_date),
+                modification_date: row.modification_date,
+                renderedContent: markdown.render(row.content),
+                editor: {
+                    username: row.editor_username,
+                    id: row.editor_id
+                },
+                tag_string: row.tag_string,
+                taglist: Question.tagStringToArray(row.tag_string)
+            }
         });
     }
 }

@@ -85,7 +85,7 @@ class Answer {
     }
 
     archive(content, editorUsername, editorId) {
-        return conn.query("INSERT INTO answer_edit_history (content, editor_id, editor_username) VALUES ($1,$2,$3)", [content, editorId, editorUsername]);
+        return conn.query("INSERT INTO answer_edit_history (content, editor_id, editor_username, answer_id) VALUES ($1,$2,$3,$4)", [content, editorId, editorUsername, this.id]);
     }
 
 
@@ -122,6 +122,21 @@ class Answer {
             return null;
         }
         return row.upvote;
+    }
+
+    async getHistory() {
+        const {rows} = await conn.multiRow("SELECT * FROM answer_edit_history WHERE answer_id = $1 ORDER BY modification_date DESC", [this.id]);
+        return rows.map(row => {
+            return {
+                modification_string: timeAgo.format(row.modification_date),
+                modification_date: row.modification_date,
+                renderedContent: markdown.render(row.content),
+                editor: {
+                    username: row.editor_username,
+                    id: row.editor_id
+                }
+            }
+        });
     }
 }
 
