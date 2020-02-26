@@ -14,7 +14,7 @@ class Question {
     }
 
     async init() {
-        const {row} = await conn.singleRow('SELECT creator_id, creator_username, title, created,last_modified, tag_string, score, answers, solutions FROM question WHERE id = $1', [this.id]);
+        const {row} = await conn.singleRow('SELECT * FROM question WHERE id = $1', [this.id]);
         if (!row) {
             return false;
         }
@@ -63,6 +63,7 @@ class Question {
         this.answers = obj.answers;
         this.score = obj.score;
         this.created = obj.created;
+        this.site_id = obj.site_id;
         this.tag_string = obj.tag_string;
         if (obj.hasOwnProperty("taglist")) {
             this.taglist = obj.taglist;

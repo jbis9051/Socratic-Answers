@@ -53,6 +53,7 @@ class Answer {
         };
         this.last_modified = obj.last_modified;
         this.initial_question_id = obj.initial_question_id;
+        this.site_id = obj.site_id;
         this.created = obj.created;
     }
 

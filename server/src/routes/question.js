@@ -52,7 +52,7 @@ router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, re
         return next();
     }
     const question = await Question.FromId(req.params.id);
-    if (!question) {
+    if (!question || question.site_id !== req.site.id) {
         return next();
     }
     await question.fillContent();
@@ -82,7 +82,7 @@ router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, a
         return;
     }
     const question = await Question.FromId(req.params.id);
-    if (!question) {
+    if (!question || question.site_id !== req.site.id) {
         return next();
     }
     await question.edit(req.body.title, req.body.body, req.body.tags, req.user.username, req.user.id);
@@ -106,7 +106,7 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
         return next();
     }
     const question = await Question.FromId(req.params.id);
-    if (!question) {
+    if (!question || question.site_id !== req.site.id) {
         next();
         return;
     }
