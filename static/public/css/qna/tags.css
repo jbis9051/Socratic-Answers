@@ -1,6 +1,5 @@
 .question-tags {
     overflow: hidden;
-    white-space: nowrap;
     padding: 5px 5px 5px 0;
 }
 
@@ -14,6 +13,7 @@
     margin-right: 5px;
     user-select: none;
     -webkit-user-select: none;
+    margin-bottom: 10px;
 }
 
 .question-tag:hover {

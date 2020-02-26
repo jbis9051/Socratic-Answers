@@ -3,11 +3,6 @@
     border-bottom: #7c7c7c solid 1px;
     display: flex;
 }
-@media (min-width: 320px) and (max-width: 480px) {
-    .question {
-        flex-direction: column-reverse;
-    }
-}
 
 .question > div {
     padding: 5px 10px;
@@ -76,4 +71,13 @@
 }
 .question--tags-input {
     margin-top: 10px;
+}
+
+@media screen and (max-width: 480px) {
+    .question {
+        flex-direction: column-reverse;
+    }
+    .question-metadata {
+        flex-basis: 135px;
+    }
 }
