@@ -12,5 +12,6 @@ router.use('/questions', require('./question'));
 router.use('/answers', require('./answer'));
 router.use('/resetpassword', require('./resetpassword'));
 router.use('/vote', require('./vote'));
+router.use('/comments', require('./comments'));
 
 module.exports = router;

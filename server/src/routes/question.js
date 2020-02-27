@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const Comment = require('../models/Comment');
 const LinkQA = require('../models/LinkQA');
 const Question = require('../models/Question');
+
 const requireUser = require('../middleware/requireUser');
 const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
@@ -118,6 +120,23 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
     await question.fillContent();
     const links = await LinkQA.getAnswers(question.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
     await Promise.all(links.map(async link => {
+        link.comments = await link.getComments();
+        link.comments.push({
+            renderedContent: 'Hello World!',
+            creator: {
+                id: 1,
+                username: "jbis9051",
+            },
+            created: new Date()
+        });
+        link.comments.push({
+            renderedContent: '@jbis9051 Long Text Super Long Really Long. Yes! No. Maybe? More long text supercalifragilistic.',
+            creator: {
+                id: 1,
+                username: "jbis9051",
+            },
+            created: new Date()
+        });
         const answer = link.answer;
         await answer.fillContent();
         answer.votes = await link.getVotes();

@@ -1,5 +1,5 @@
 module.exports =(options) => {
-    if(options.json){
+    if(options && options.json){
         return function (req, res, next) {
             if (!req.user) {
                 res.status(401).json({success: false, errors:["You must be logged in to preform this action"]});

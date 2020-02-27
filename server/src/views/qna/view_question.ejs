@@ -5,6 +5,7 @@
     <%- include('../components/common/standard-head') %>
     <link rel="stylesheet" href="/css/md.css">
     <link rel="stylesheet" href="/css/qna/tags.css">
+    <link rel="stylesheet" href="/css/qna/comments.css">
     <link rel="stylesheet" href="/css/qna/view_question.css">
     <script src="/js/markdown-editor.js"></script>
     <title><%= question.title %></title>
@@ -38,54 +39,65 @@
     <% links.forEach(link => {
         const answer = link.answer;
     %>
-    <div class="main-content answer">
-        <div class="answer--split">
-            <div class="answer--voting" data-link-id="<%= link.id %>" data-answer-id="<%= answer.id %>">
-                <svg class="upvote clickable arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
-                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
-                    <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
-                </svg>
-                <span class="score positive">+<span><%= answer.votes.positives %></span></span>
-                <span class="score negative">-<span><%= answer.votes.negatives %></span></span>
-                <svg class="downvote clickable arrow <%= answer.userSelected === "downvote" ? "selected" : "" %>"
-                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
-                    <polygon points="32 0 16 23.59 0 0 32 0"/>
-                </svg>
-                <% if(link.answer_is_solution) { %>
-                    <span class="solution_mark is_solution clickable">✓</span>
-                <% } else if(currentUser && question.creator.id === currentUser.id){ %>
-                    <span class="solution_mark clickable">✓</span>
-                <% } %>
+    <div class="answer-wrapper">
+        <div class="answer">
+            <div class="answer--split">
+                <div class="answer--voting" data-link-id="<%= link.id %>" data-answer-id="<%= answer.id %>">
+                    <svg class="upvote clickable arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
+                    </svg>
+                    <span class="score positive">+<span><%= answer.votes.positives %></span></span>
+                    <span class="score negative">-<span><%= answer.votes.negatives %></span></span>
+                    <svg class="downvote clickable arrow <%= answer.userSelected === "downvote" ? "selected" : "" %>"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
+                        <polygon points="32 0 16 23.59 0 0 32 0"/>
+                    </svg>
+                    <% if(link.answer_is_solution) { %>
+                        <span class="solution_mark is_solution clickable">✓</span>
+                    <% } else if(currentUser && question.creator.id === currentUser.id){ %>
+                        <span class="solution_mark clickable">✓</span>
+                    <% } %>
+                </div>
+                <div class="answers--body md-body">
+                    <%- answer.renderedContent %>
+                </div>
             </div>
-            <div class="answers--body md-body">
-                <%- answer.renderedContent %>
-            </div>
-        </div>
-        <div class="answer--meta">
+            <div class="answer--meta">
             <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> <a
                         href="/answers/history/<%= answer.id %>">(modified <%= answer.last_modified.toISOString() %>)</a></span>
-            <div class="post--operations">
-                <% if(answer.initial_question_id === null) { %>
-                    <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
-                <% } else if(answer.initial_question_id !== question.id){ %>
-                    <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
-                    /
-                <% } %>
-                <a class="post--operation" href="/answers/<%= answer.id %>">links</a> /
-                <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
-                <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
-                <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
-            </div>
-            <span class="author">Authored by <a
-                        href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
-        </div>
-        <div class="comment-wrapper">
-            <% link.comments.forEach(comment => { %>
-                <div class="comment">
-                    <span class="comment--content"><%= comment.renderedContent %></span> — <a class="comment--creator"
-                                                                                              href="/users/<%= comment.creator.id %>"><%= comment.creator.username %></a>
+                <div class="post--operations">
+                    <% if(answer.initial_question_id === null) { %>
+                        <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
+                    <% } else if(answer.initial_question_id !== question.id){ %>
+                        <a class="post--operation" href="/questions/<%= answer.initial_question_id %>#<%= answer.id %>">original</a>
+                        /
+                    <% } %>
+                    <a class="post--operation" href="/answers/<%= answer.id %>">links</a> /
+                    <a class="post--operation" href="/answers/edit/<%= answer.id %>">edit</a> /
+                    <a class="post--operation" href="/answers/flag/<%= answer.id %>">flag</a> /
+                    <a class="post--operation" href="/answers/<%= answer.id %>">share</a>
                 </div>
-            <% }); %>
+                <span class="author">Authored by <a
+                            href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
+            </div>
+        </div>
+        <div class="comments-wrapper">
+            <details>
+                <summary>Comments</summary>
+                <div class="comments-container">
+                    <% link.comments.forEach(comment => { %>
+                        <%- include('./comment.ejs',{comment}) %>
+                    <% }); %>
+                </div>
+            </details>
+            <div class="add-comment-wrapper answer"  data-link-id="<%= link.id %>">
+                <span class="add-comment--button">Add Comment</span>
+                <div class="add-comment--editor">
+                    <textarea placeholder="At least 15 characters" class="add-comment--input"></textarea>
+                    <button class="add-comment--submit btn">Add</button>
+                </div>
+            </div>
         </div>
     </div>
     <% }) %>
@@ -107,6 +119,7 @@
     const questionid = <%= question.id %>;
     const loggedIn = <%= !!currentUser %>;
 </script>
+<script src="/js/qna/comments.js"></script>
 <script src="/js/qna/view_question.js"></script>
 </body>
 </html>

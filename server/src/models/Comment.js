@@ -1,5 +1,5 @@
 const markdown = require('../helpers/markdown');
-
+const conn = require('../database/postges.js').pool;
 
 class Comment {
     constructor(id) {
@@ -24,14 +24,15 @@ class Comment {
 
     static async FromId(id) {
         const comment = new Comment(id);
-        if(!await comment.init()){
+        if (!await comment.init()) {
             return null;
-        };
+        }
+        ;
         return comment;
     }
 
-    static async create(qa_id, user_id, content) {
-        const {row} = await conn.singleRow("INSERT INTO comments (qa_id, user_id, content) VALUES ($1, $2, $3)", [qa_id, user_id, content]);
+    static async create(qa_id, user_id, content, username) {
+        const {row} = await conn.singleRow("INSERT INTO comments (qa_id, user_id, content, username) VALUES ($1, $2, $3,$4) RETURNING id AS insertid", [qa_id, user_id, content, username]);
         return new Comment(row.insertid);
     }
 
@@ -41,7 +42,7 @@ class Comment {
         return conn.query("UPDATE comments SET content = $1 WHERE id  = $2", [content, this.id])
     }
 
-    delete(){
+    delete() {
         return conn.query("DELETE FROM comments WHERE id = $1", [this.id])
     }
 }

@@ -1,7 +1,7 @@
 const conn = require('../database/postges.js').pool;
 const Question = require('./Question');
 const Answer = require('./Answer');
-const User = require('./User');
+const Comment = require('./Comment');
 
 
 class LinkQA {
@@ -119,6 +119,15 @@ class LinkQA {
             const linkQA = new LinkQA(obj.id);
             linkQA._setAttributes(obj);
             linkQA.question._setAttributes(obj);
+        });
+    }
+
+    async getComments(){
+        const {rows} = await conn.multiRow("SELECT * FROM comments WHERE qa_id = $1", [this.id]);
+        return rows.map(row => {
+            const comment = new Comment(row.id);
+            comment._setAttributes(row);
+            return comment;
         });
     }
 }

@@ -27,7 +27,11 @@ const validators = {
     ResetPasswordEmailForm:  require('./resetPasswordEmailForm'),
     ResetPasswordTokenCheck: require('./resetPasswordTokenCheck'),
     ResetPasswordResetForm: require('./resetPasswordResetForm'),
-    CommentsValidatorForm: require('./commentsValidatorForm')
+    CommentsValidatorFormCreate: require('./commentsValidatorForm').Create,
+    CommentsValidatorFormEdit: require('./commentsValidatorForm').Edit,
+    CommentsValidatorFormDelete: require('./commentsValidatorForm').Delete
+
+
 };
 
 Object.keys(validators).forEach(key => {
