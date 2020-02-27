@@ -31,7 +31,6 @@ class Answer {
         return undefined;
     }
 
-
     async fillContent() {
         const {row} = await conn.singleRow('SELECT content FROM answers WHERE id = $1', [this.id]);
         this.content = row.content;
@@ -69,21 +68,19 @@ class Answer {
         const {row} = await conn.singleRow("INSERT INTO answers (content, site_id, initial_question_id, creator_username, creator_id) VALUES ($1,$2,$3,$4,$5) RETURNING id AS insertid", [body, site, question, creator.username, creator.id]);
         const answer = new Answer(row.insertid);
         await answer.archive(body, creator.username, creator.id);
-        if (question) {
-            await answer.link(question);
-        }
         return answer;
     }
 
-    async link(quesitonid) {
+    /***
+     * @deprecated
+     * @param quesitonid
+     * @return {Promise<void>}
+     */
+    async link(quesitonid) {  //TODO remove
         await conn.query("INSERT INTO questions_join_answers (question_id, answer_id) VALUES ($1,$2)", [quesitonid, this.id]);
         await conn.query("UPDATE question SET answers = answers + 1 WHERE id = $1", [quesitonid]);
     }
 
-    async unlink(quesitonid) {
-        await conn.query("DELETE FROM questions_join_answers WHERE question_id = $1 AND answer_id = $2", [quesitonid, this.id]);
-        await conn.query("UPDATE question SET answers = answers - 1 WHERE id = $1", [quesitonid]);
-    }
 
     archive(content, editorUsername, editorId) {
         return conn.query("INSERT INTO answer_edit_history (content, editor_id, editor_username, answer_id) VALUES ($1,$2,$3,$4)", [content, editorId, editorUsername, this.id]);
@@ -93,36 +90,6 @@ class Answer {
     async edit(body, editorUsername, editorId) {
         await this.archive(body, editorUsername, editorId);
         await conn.query("UPDATE answers SET content = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2", [body, this.id]);
-    }
-
-    async getQaId(quesitonid) {
-        const {row} = await conn.singleRow(`SELECT id
-                                            FROM questions_join_answers
-                                            WHERE question_id = $1
-                                              AND answer_id = $2`, [quesitonid, this.id]);
-        return row.id;
-    }
-
-    async getVotes(qaId) {
-        const {row: positives} = await conn.singleRow("SELECT COUNT(*) AS total FROM votes WHERE qa_id = $1 AND upvote = TRUE", [qaId]);
-        const {row: negatives} = await conn.singleRow("SELECT COUNT(*) AS total FROM votes WHERE qa_id = $1 AND upvote = FALSE", [qaId]);
-        return {
-            positives: positives.total,
-            negatives: negatives.total,
-            net: positives.total - negatives.total
-        }
-    }
-
-    static solve(qaId, solve = true) {
-        return conn.query("UPDATE questions_join_answers SET answer_is_solution = $1 WHERE id = $2", [solve, qaId])
-    }
-
-    async getVoteForUser(qaID, userid) {
-        const {row} = await conn.singleRow("SELECT upvote FROM votes WHERE qa_id = $1 AND user_id = $2", [qaID, userid]);
-        if (row === undefined) {
-            return null;
-        }
-        return row.upvote;
     }
 
     async getHistory() {

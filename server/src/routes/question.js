@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const LinkQA = require('../models/LinkQA');
 const Question = require('../models/Question');
 const requireUser = require('../middleware/requireUser');
 const csrfToken = require('../middleware/csurf');
@@ -115,13 +116,13 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
         return;
     }
     await question.fillContent();
-    const answers = await question.getAnswers(req.site.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
-    await Promise.all(answers.map(async answer => {
+    const links = await LinkQA.getAnswers(question.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
+    await Promise.all(links.map(async link => {
+        const answer = link.answer;
         await answer.fillContent();
-        const qaID = await answer.getQaId(question.id);
-        answer.votes = await answer.getVotes(qaID);
+        answer.votes = await link.getVotes();
         if (req.user) {
-            answer.userSelected = await answer.getVoteForUser(qaID, req.user.id);
+            answer.userSelected = await link.getVoteForUser(req.user.id);
         } else {
             answer.userSelected = null;
         }
@@ -131,7 +132,7 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
             answer.userSelected = "downvote";
         }
     }));
-    res.render('qna/view_question', {question, answers});
+    res.render('qna/view_question', {question, links});
 });
 
 

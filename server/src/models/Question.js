@@ -84,25 +84,6 @@ class Question {
         });
     }
 
-    async getAnswers(siteid, page = 1, orderby, perpage = 30) {
-        const orderbyWhite = {
-            "newest": "answers.created",
-            "links": ""
-        };
-        if (!orderbyWhite.hasOwnProperty(orderby)) {
-            return [];
-        }
-        const {rows: answers} = await conn.multiRow(`SELECT * FROM questions_join_answers INNER JOIN answers ON questions_join_answers.answer_id = answers.id WHERE questions_join_answers.question_id = $1 AND deleted = FALSE ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $2 OFFSET $3`, [this.id, perpage, (page - 1) * perpage]);
-        return answers.map(answer => {
-            const answer2 = new Answer(answer.id);
-            answer2._setAttributes(answer);
-            if (answer.answer_is_solution) {
-                answer2.is_solution = true;
-            }
-            return answer2;
-        });
-    }
-
     static async create(title, body, tags, siteid, creator) {
         const tagString = tags.map(tag => '<' + tag + '>').join("");
         const {row} = await conn.singleRow("INSERT INTO question (creator_id, creator_username, site_id, title, content, tag_string) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id AS insertId", [creator.id, creator.username, siteid, title, body, tagString]);
@@ -123,15 +104,6 @@ class Question {
         this.tag_string = tags.map(tag => '<' + tag + '>').join("");
         await this.archive(title, body, this.tag_string, editorUsername, editorId);
         await conn.query("UPDATE question SET title = $1, content = $2, tag_string = $3, last_modified = CURRENT_TIMESTAMP WHERE id = $4", [this.title, this.content, this.tag_string, this.id]);
-    }
-
-    static async getLinks(answerId) {
-        const {rows} = await conn.multiRow("SELECT question_id, title FROM questions_join_answers INNER JOIN question q ON questions_join_answers.question_id = q.id WHERE answer_id = $1", [answerId]);
-        return rows.map(row => {
-            const q = new Question(row.question_id);
-            q.title = row.title;
-            return q;
-        });
     }
 
     async getHistory() {

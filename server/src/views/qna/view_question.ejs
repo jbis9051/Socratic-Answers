@@ -34,10 +34,12 @@
 </div>
 <span class="section-label answer-amount"><%= question.answers %> Answers</span>
 <div class="answers-wrapper">
-    <% answers.forEach(answer => { %>
+    <% links.forEach(link => {
+        const answer = link.answer;
+    %>
         <div class="main-content answer">
             <div class="answer--split">
-                <div class="answer--voting" data-answer-id="<%= answer.id %>">
+                <div class="answer--voting" data-link-id="<%= link.id %>" data-answer-id="<%= answer.id %>">
                     <svg class="upvote clickable arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
@@ -48,7 +50,7 @@
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon points="32 0 16 23.59 0 0 32 0"/>
                     </svg>
-                    <% if(answer.is_solution) { %>
+                    <% if(link.answer_is_solution) { %>
                         <span class="solution_mark is_solution clickable">✓</span>
                     <% } else if(currentUser && question.creator.id === currentUser.id){ %>
                         <span class="solution_mark clickable">✓</span>

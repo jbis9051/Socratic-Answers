@@ -37,15 +37,15 @@ function _handleClick(el, positive) {
         main = el.parentElement.querySelector('.negative');
     }
 
-    const answerId = el.parentElement.getAttribute('data-answer-id');
+    const qaid = el.parentElement.getAttribute('data-link-id');
     oppArrowSelector.classList.remove("selected");
     if (el.classList.contains("selected")) {
-        unvote(questionid, answerId).then(_ => {
+        unvote(qaid).then(_ => {
             addToVote(main, -1);
             el.classList.remove("selected");
         });
     } else {
-        vote(questionid, answerId, positive).then(_ => {
+        vote(qaid, positive).then(_ => {
             el.classList.add("selected");
             addToVote(main, 1);
         });
@@ -66,10 +66,9 @@ async function voteRequest(fetchFunction) {
     return true;
 }
 
-function vote(questionid, answerId, upvote) {
+function vote(qaid, upvote) {
     const formdata = new URLSearchParams();
-    formdata.append("question", questionid);
-    formdata.append("answer", answerId);
+    formdata.append("qa_id", qaid);
     formdata.append("upvote", upvote);
     return voteRequest(fetch(`/vote/vote`, {
         method: 'POST',
@@ -80,10 +79,9 @@ function vote(questionid, answerId, upvote) {
     }));
 }
 
-function unvote(questionid, answerId) {
+function unvote(qaid) {
     const formdata = new URLSearchParams();
-    formdata.append("question", questionid);
-    formdata.append("answer", answerId);
+    formdata.append("qa_id", qaid);
     return voteRequest(fetch(`/vote/unvote`, {
         method: 'POST',
         headers: {
@@ -93,10 +91,9 @@ function unvote(questionid, answerId) {
     }));
 }
 
-function solutionize(quesitonid, answerId) {
+function solutionize(qaid) {
     const formdata = new URLSearchParams();
-    formdata.append("question", questionid);
-    formdata.append("answer", answerId);
+    formdata.append("qa_id", qaid);
     return voteRequest(fetch(`/vote/solutionize`, {
         method: 'POST',
         headers: {
@@ -106,10 +103,9 @@ function solutionize(quesitonid, answerId) {
     }));
 }
 
-function unsolutionize(questionId, answerId) {
+function unsolutionize(qaid) {
     const formdata = new URLSearchParams();
-    formdata.append("question", questionid);
-    formdata.append("answer", answerId);
+    formdata.append("qa_id", qaid);
     return voteRequest(fetch(`/vote/unsolutionize`, {
         method: 'POST',
         headers: {

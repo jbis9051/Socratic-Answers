@@ -253,23 +253,6 @@ class User {
         return row.count;
     }
 
-    async vote(qaId, upvote) {
-        await this.removeVote(qaId);
-        await conn.query("INSERT INTO votes (qa_id, user_id, upvote)  VALUES ($1, $2, $3)", [qaId, this.id, upvote]);
-    }
-
-    async removeVote(qaId) {
-        await conn.query("DELETE FROM votes WHERE qa_id = $1 AND user_id = $2", [qaId, this.id]);
-    }
-
-    async solutionize(qaId) {
-        await conn.query("UPDATE questions_join_answers SET answer_is_solution = TRUE WHERE id = $1", [qaId]);
-    }
-
-    async unsolutionize(qaId) {
-        await conn.query("UPDATE questions_join_answers SET answer_is_solution = FALSE WHERE id = $1", [qaId]);
-    }
-
     /* reset */
 
     async sendResetLink() {

@@ -3,6 +3,7 @@ const router = express.Router();
 
 const csrfToken = require('../middleware/csurf');
 
+const LinkQA = require('../models/LinkQA');
 const Answer = require('../models/Answer');
 const Question = require('../models/Question');
 
@@ -19,7 +20,7 @@ router.get('/:id', idParam, async function (req, res, next) {
         return;
     }
     await answer.fillContent();
-    const links = await Question.getLinks(answer.id);
+    const links = await LinkQA.getQuestions(answer.id);
     res.render('qna/answer/view', {answer, linkedQuestions: links});
 });
 
@@ -29,7 +30,8 @@ router.post('/create', AnswerCreateForm, async function (req, res, next) {
         //  next(); //TODO show error
         return;
     }
-    await Answer.create(req.body.body, req.site.id, req.body._question, req.user);
+    const answer = await Answer.create(req.body.body, req.site.id, req.body._question, req.user);
+    await LinkQA.link(req.body._question, answer.id);
     res.redirect("/questions/" + req.body._question)
 });
 
