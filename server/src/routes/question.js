@@ -8,7 +8,7 @@ const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
 const {QuestionAskEditForm, idParam} = require('../validation');
 
-router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
+router.get('/ask', requireUser(), csrfToken, async function (req, res, next) {
     res.render('qna/ask', {
         csrfToken: req.csrfToken(),
         errors: [],
@@ -19,7 +19,7 @@ router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
     });
 });
 
-router.post('/ask', requireUser, csrfToken, QuestionAskEditForm, async function (req, res, next) {
+router.post('/ask', requireUser(), csrfToken, QuestionAskEditForm, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
@@ -48,7 +48,7 @@ router.get("/history/:id", idParam, async function (req, res, next) {
     res.render('qna/qhistory', {question, history});
 });
 
-router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, res, next) {
+router.get('/edit/:id', requireUser(), csrfToken, idParam, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
     }
@@ -67,7 +67,7 @@ router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, re
     });
 });
 
-router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, async function (req, res, next) {
+router.post('/edit/:id', requireUser(), csrfToken, idParam, QuestionAskEditForm, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
     }

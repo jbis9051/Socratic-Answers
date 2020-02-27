@@ -3,6 +3,7 @@ CREATE TABLE comments
     id      SERIAL PRIMARY KEY,
     qa_id   INTEGER      NOT NULL,
     user_id INTEGER      NOT NULL,
+    username VARCHAR(256) NOT NULL,
     content VARCHAR(256) NOT NULL,
     created TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     CONSTRAINT comments_user_id_fk

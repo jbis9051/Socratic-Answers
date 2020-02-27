@@ -13,15 +13,20 @@ class Comment {
 
     _setAttributes(obj) {
         this.qa_id = obj.qa_id;
-        this.user_id = obj.user_id;
+        this.creator = {
+            id: obj.user_id,
+            username: obj.username
+        };
         this.content = obj.content;
         this.renderedContent = markdown.render(this.content);
         this.created = obj.created;
     }
 
-    async FromId(id) {
+    static async FromId(id) {
         const comment = new Comment(id);
-        await comment.init();
+        if(!await comment.init()){
+            return null;
+        };
         return comment;
     }
 
@@ -34,6 +39,10 @@ class Comment {
         this.content = content;
         this.renderedContent = markdown.render(this.content);
         return conn.query("UPDATE comments SET content = $1 WHERE id  = $2", [content, this.id])
+    }
+
+    delete(){
+        return conn.query("DELETE FROM comments WHERE id = $1", [this.id])
     }
 }
 

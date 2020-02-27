@@ -32,23 +32,17 @@ router.post('/vote', VoteValidation, async function (req, res, next) {
 
     await linkQA.answer.init();
 
-   /* if (req.user.id === linkQA.answer.creator.id) {
-        res.status(401);
-        res.json({success: false, error: "You can't vote on your own post"});
-        return;
-    }*/
+    if (req.user.id === linkQA.answer.creator.id) {
+         res.status(401);
+         res.json({success: false, error: "You can't vote on your own post"});
+         return;
+     }
 
     await linkQA.vote(req.user.id, upvote);
     res.json({success: true, error: ""});
 });
 
-router.post('/unvote', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/unvote', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
@@ -67,13 +61,7 @@ router.post('/unvote', VoteValidation, async function (req, res, next) {
     res.json({success: true, error: ""});
 });
 
-router.post('/solutionize', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/solutionize', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
@@ -101,13 +89,7 @@ router.post('/solutionize', VoteValidation, async function (req, res, next) {
     res.json({success: true, error: ""});
 });
 
-router.post('/unsolutionize', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/unsolutionize', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
