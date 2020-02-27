@@ -32,11 +32,11 @@ router.post('/vote', VoteValidation, async function (req, res, next) {
 
     await linkQA.answer.init();
 
-    if (req.user.id === linkQA.answer.creator.id) {
+   /* if (req.user.id === linkQA.answer.creator.id) {
         res.status(401);
         res.json({success: false, error: "You can't vote on your own post"});
         return;
-    }
+    }*/
 
     await linkQA.vote(req.user.id, upvote);
     res.json({success: true, error: ""});
@@ -97,7 +97,7 @@ router.post('/solutionize', VoteValidation, async function (req, res, next) {
         return;
     }
 
-    await linkQA.solutionize(req.user.id);
+    await linkQA.solutionize();
     res.json({success: true, error: ""});
 });
 
@@ -130,7 +130,7 @@ router.post('/unsolutionize', VoteValidation, async function (req, res, next) {
         return;
     }
 
-    await linkQA.unsolutionize(req.user.id);
+    await linkQA.unsolutionize();
 
     res.json({success: true, error: ""});
 });

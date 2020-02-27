@@ -62,20 +62,20 @@ class LinkQA {
     }
 
     async vote(userid, upvote) {
-        await this.removeVote(qaId);
+        await this.removeVote(userid);
         await conn.query("INSERT INTO votes (qa_id, user_id, upvote)  VALUES ($1, $2, $3)", [this.id, userid, upvote]);
     }
 
     async removeVote(userid) {
-        await conn.query("DELETE FROM votes WHERE qa_id = $1 AND user_id = $2", [qaId, userid]);
+        await conn.query("DELETE FROM votes WHERE qa_id = $1 AND user_id = $2", [this.id, userid]);
     }
 
-    async solutionize(userid) {
-        await conn.query("UPDATE questions_join_answers SET answer_is_solution = TRUE WHERE id = $1", [this.id,userid]);
+    async solutionize() {
+        await conn.query("UPDATE questions_join_answers SET answer_is_solution = TRUE WHERE id = $1", [this.id]);
     }
 
-    async unsolutionize(userid) {
-        await conn.query("UPDATE questions_join_answers SET answer_is_solution = FALSE WHERE id = $1", [this.id,userid]);
+    async unsolutionize() {
+        await conn.query("UPDATE questions_join_answers SET answer_is_solution = FALSE WHERE id = $1", [this.id]);
     }
 
     static async link(question_id, answer_id) {
@@ -97,9 +97,9 @@ class LinkQA {
         if (!orderbyWhite.hasOwnProperty(orderby)) {
             return [];
         }
-        const {rows: objs} = await conn.multiRow(`SELECT * FROM questions_join_answers INNER JOIN answers ON questions_join_answers.answer_id = answers.id WHERE questions_join_answers.question_id = $1 AND deleted = FALSE ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $2 OFFSET $3`, [question_id, perpage, (page - 1) * perpage]);
+        const {rows: objs} = await conn.multiRow(`SELECT *, questions_join_answers.id AS qaid  FROM questions_join_answers INNER JOIN answers ON questions_join_answers.answer_id = answers.id WHERE questions_join_answers.question_id = $1 AND deleted = FALSE ORDER BY ${orderbyWhite[orderby]} DESC LIMIT $2 OFFSET $3`, [question_id, perpage, (page - 1) * perpage]);
         return objs.map(obj => {
-            const linkQA = new LinkQA(obj.id);
+            const linkQA = new LinkQA(obj.qaid);
             linkQA._setAttributes(obj);
             linkQA.answer._setAttributes(obj);
             return linkQA;

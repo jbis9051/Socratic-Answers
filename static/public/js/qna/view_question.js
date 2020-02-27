@@ -38,7 +38,6 @@ function _handleClick(el, positive) {
     }
 
     const qaid = el.parentElement.getAttribute('data-link-id');
-    oppArrowSelector.classList.remove("selected");
     if (el.classList.contains("selected")) {
         unvote(qaid).then(_ => {
             addToVote(main, -1);
@@ -49,6 +48,10 @@ function _handleClick(el, positive) {
             el.classList.add("selected");
             addToVote(main, 1);
         });
+    }
+    if (oppArrowSelector.classList.contains("selected")) {
+        oppArrowSelector.classList.remove("selected");
+        addToVote(opp, -1);
     }
 }
 
@@ -116,11 +119,11 @@ function unsolutionize(qaid) {
 }
 
 function _handleSolutionize(el, shouldSolutionize) {
-    const answerId = el.parentElement.getAttribute('data-answer-id');
+    const qaId = el.parentElement.getAttribute('data-link-id');
 
     if (shouldSolutionize) {
-        solutionize(questionid, answerId).then(_ => el.classList.add("is_solution"));
+        solutionize(qaId).then(_ => el.classList.add("is_solution"));
     } else {
-        unsolutionize(questionid, answerId).then(_ => el.classList.remove("is_solution"));
+        unsolutionize(qaId).then(_ => el.classList.remove("is_solution"));
     }
 }
