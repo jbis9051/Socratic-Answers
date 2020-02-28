@@ -2,10 +2,11 @@
     max-width: 400px;
 }
 .checkbox {
-    width: 27px;
+    width: 50px;
 }
 .checkbox-flex {
     display: flex;
+    align-items: center;
 }
 .email-opt {
     font-size: 12px;

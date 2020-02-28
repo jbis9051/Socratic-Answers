@@ -63,6 +63,7 @@ form a:hover {
 
 .checkbox-flex {
     display: flex;
+    align-items: center;
 }
 
 .checkbox-flex label {
@@ -70,5 +71,5 @@ form a:hover {
 }
 
 .checkbox-flex input[type=checkbox] {
-    width: 20px;
+    width: 50px;
 }
