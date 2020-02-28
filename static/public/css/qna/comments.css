@@ -18,7 +18,7 @@
     display: block;
 }
 
-.add-comment--button {
+.add-comment--button,.comment--delete {
     color: #0ea0ee;
     user-select: none;
     -webkit-user-select: none;
@@ -30,7 +30,7 @@
 .add-comment-wrapper.active .add-comment--button {
     display: none;
 }
-.add-comment--button:hover {
+.add-comment--button:hover,.comment--delete {
     color: #0ea9ff;
 }
 
@@ -48,4 +48,11 @@
 }
 .comment--content * {
     display: inline;
+}
+.comment--delete {
+    display: inline;
+    color: #e2827c;
+}
+.comment--delete:hover {
+    color: #ff9791;
 }

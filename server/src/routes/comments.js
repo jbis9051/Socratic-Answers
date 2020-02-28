@@ -19,7 +19,7 @@ router.post("/add", requireUser({json: true}), CommentsValidatorFormCreate, func
             res.json({success: true, errors: [], html});
         });
     }).catch(err => {
-        if(err.code === "23503"){ // foreign key error
+        if (err.code === "23503") { // foreign key error
             res.json({success: false, errors: ["This post does not exist"]});
         }
     })
@@ -31,7 +31,7 @@ router.post("/edit/:id", requireUser({json: true}), CommentsValidatorFormEdit, a
         res.json({success: false, errors: req.validationErrors[0].map(err => err.str)});
         return;
     }
-    const comment = Comment.FromId(req.params.id, req.body.type);
+    const comment = await Comment.FromId(req.params.id, req.body.type);
     if (!comment) {
         return next();
     }
@@ -50,7 +50,7 @@ router.post("/delete/:id", requireUser({json: true}), CommentsValidatorFormDelet
         res.json({success: false, errors: req.validationErrors[0].map(err => err.str)});
         return;
     }
-    const comment = Comment.FromId(req.params.id);
+    const comment = await Comment.FromId(req.params.id, req.body.type);
     if (!comment) {
         return next();
     }
@@ -59,7 +59,7 @@ router.post("/delete/:id", requireUser({json: true}), CommentsValidatorFormDelet
         res.json({success: false, error: "Unauthorized"});
         return;
     }
-    await comment.delete(req.body.content);
+    await comment.delete();
     res.json({success: true, errors: []});
 });
 

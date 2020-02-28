@@ -5,20 +5,22 @@ class Comment {
     constructor(id, type) {
         this.id = id;
         this.type = type;
+        this.table = this.type === "link" ? "link-comments" : "question-comments";
     }
 
     async init() {
         let row;
-        if(this.type === "link"){
+        if (this.type === "link") {
             row = await conn.singleRow("SELECT * FROM \"link-comments\" WHERE id = $1", [this.id]);
         } else {
             row = await conn.singleRow("SELECT * FROM \"question-comments\" WHERE id = $1", [this.id]);
         }
         this._setAttributes(row.row);
+        return true;
     }
 
     _setAttributes(obj) {
-        if(this.type === "question"){
+        if (this.type === "question") {
             this.question_id = obj.question_id;
         } else {
             this.qa_id = obj.qa_id;
@@ -44,10 +46,10 @@ class Comment {
 
     static async create(id, type, user_id, content, username) {
         let row;
-        if(type === "question"){
+        if (type === "question") {
             row = await conn.singleRow("INSERT INTO \"question-comments\" (question_id, user_id, content, username) VALUES ($1, $2, $3,$4) RETURNING id AS insertid", [id, user_id, content, username]);
 
-        } else if (type === "link"){
+        } else if (type === "link") {
             row = await conn.singleRow("INSERT INTO \"link-comments\" (qa_id, user_id, content, username) VALUES ($1, $2, $3,$4) RETURNING id AS insertid", [id, user_id, content, username]);
         } else {
             throw "Invalid type"
@@ -58,11 +60,11 @@ class Comment {
     edit(content) {
         this.content = content;
         this.renderedContent = markdown.render(this.content);
-        return conn.query("UPDATE \"link-comments\" SET content = $1 WHERE id  = $2", [content, this.id])
+        return conn.query(`UPDATE "${this.table}" SET content = $1 WHERE id  = $2`, [content, this.id])
     }
 
     delete() {
-        return conn.query("DELETE FROM \"link-comments\" WHERE id = $1", [this.id])
+        return conn.query(`DELETE FROM "${this.table}" WHERE id = $1`, [this.id])
     }
 }
 

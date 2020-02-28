@@ -28,3 +28,26 @@ document.querySelectorAll('.add-comment-wrapper').forEach(el => {
         el.parentElement.querySelector('details').open = true;
     });
 });
+
+document.querySelectorAll('.comments-wrapper').forEach(el => {
+    el.addEventListener('click', async e => {
+        if (!e.target.classList.contains('comment--delete')) {
+            return;
+        }
+        const formdata = new URLSearchParams();
+        formdata.append("type", el.querySelector('.add-comment-wrapper').classList.contains("answer-type") ? "link" : "question");
+        const request = await fetch(`/comments/delete/` + e.target.parentElement.getAttribute("data-comment-id"), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formdata
+        }).catch(err => createAlert("error", err.toString()));
+        const json = await request.json();
+        if (!json.success) {
+            createAlert("error", json.errors.join(", "));
+            return;
+        }
+        e.target.parentElement.remove();
+    });
+});
