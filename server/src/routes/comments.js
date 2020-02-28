@@ -4,20 +4,25 @@ const requireUser = require('../middleware/requireUser');
 const {CommentsValidatorFormCreate, CommentsValidatorFormDelete, CommentsValidatorFormEdit} = require('../validation');
 const Comment = require('../models/Comment');
 
-router.post("/add", requireUser({json: true}), CommentsValidatorFormCreate, async function (req, res, next) {
+router.post("/add", requireUser({json: true}), CommentsValidatorFormCreate, function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, errors: req.validationErrors[0].map(err => err.msg)});
         return;
     }
-    const comment = await Comment.create(req.body.id, req.body.type, req.user.id, req.body.content, req.user.username);
-    await comment.init();
-    res.render('qna/comment', {comment}, function (err, html) {
-        if (err) {
-            return next(err);
+    Comment.create(req.body.id, req.body.type, req.user.id, req.body.content, req.user.username).then(async comment => {
+        await comment.init();
+        res.render('qna/comment', {comment}, function (err, html) {
+            if (err) {
+                return next(err);
+            }
+            res.json({success: true, errors: [], html});
+        });
+    }).catch(err => {
+        if(err.code === "23503"){ // foreign key error
+            res.json({success: false, errors: ["This post does not exist"]});
         }
-        res.json({success: true, errors: [], html});
-    });
+    })
 });
 
 router.post("/edit/:id", requireUser({json: true}), CommentsValidatorFormEdit, async function (req, res, next) {
