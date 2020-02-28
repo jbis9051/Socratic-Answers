@@ -10,7 +10,7 @@ router.post("/add", requireUser({json: true}), CommentsValidatorFormCreate, asyn
         res.json({success: false, errors: req.validationErrors[0].map(err => err.msg)});
         return;
     }
-    const comment = await Comment.create(req.body.qa_id, req.user.id, req.body.content, req.user.username);
+    const comment = await Comment.create(req.body.id, req.body.type, req.user.id, req.body.content, req.user.username);
     await comment.init();
     res.render('qna/comment', {comment}, function (err, html) {
         if (err) {
@@ -26,7 +26,7 @@ router.post("/edit/:id", requireUser({json: true}), CommentsValidatorFormEdit, a
         res.json({success: false, errors: req.validationErrors[0].map(err => err.str)});
         return;
     }
-    const comment = Comment.FromId(req.params.id);
+    const comment = Comment.FromId(req.params.id, req.body.type);
     if (!comment) {
         return next();
     }

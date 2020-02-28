@@ -1,4 +1,4 @@
-CREATE TABLE comments
+CREATE TABLE "link-comments"
 (
     id      SERIAL PRIMARY KEY,
     qa_id   INTEGER      NOT NULL,

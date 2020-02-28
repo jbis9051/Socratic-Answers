@@ -6,10 +6,12 @@ document.querySelectorAll('.add-comment-wrapper').forEach(el => {
         evt.currentTarget.parentElement.parentElement.classList.remove("active");
         const formdata = new URLSearchParams();
         formdata.append("content", el.querySelector('.add-comment--input').value);
-        if (el.classList.contains('answer')) {
-            formdata.append("qa_id", el.getAttribute("data-link-id"));
-        } else {
-            formdata.append("question_id", questionid);
+        if (el.classList.contains('answer-type')) {
+            formdata.append("id", el.getAttribute("data-link-id"));
+            formdata.append("type", "link");
+        } else if (el.classList.contains('question-type')) {
+            formdata.append("id", questionid);
+            formdata.append("type", "question");
         }
         const request = await fetch(`/comments/add`, {
             method: 'POST',
@@ -23,5 +25,6 @@ document.querySelectorAll('.add-comment-wrapper').forEach(el => {
             return createAlert("error", resp.errors.join(", "))
         }
         el.parentElement.querySelector(".comments-container").innerHTML += resp.html;
+        el.parentElement.querySelector('details').open = true;
     });
 });

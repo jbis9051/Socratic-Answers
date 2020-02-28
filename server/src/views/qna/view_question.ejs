@@ -12,7 +12,7 @@
 </head>
 <body>
 <%- include('../components/common/topbar' ) %>
-<div class="main-content question-wrapper">
+<div class="question-wrapper">
     <div class="question">
         <h1 class="question--title"><%= question.title %></h1>
         <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (<a
@@ -33,13 +33,30 @@
         <span class="author">Authored by <a
                     href="/users/<%= question.creator.id %>/<%= question.creator.id %>"><%= question.creator.username %></a></span>
     </div>
+    <div class="comments-wrapper">
+        <details>
+            <summary>Comments</summary>
+            <div class="comments-container">
+                <% question.comments.forEach(comment => { %>
+                    <%- include('./comment.ejs',{comment}) %>
+                <% }); %>
+            </div>
+        </details>
+        <div class="add-comment-wrapper question-type"  data-question-id="<%= question.id %>">
+            <span class="add-comment--button">Add Comment</span>
+            <div class="add-comment--editor">
+                <textarea placeholder="At least 15 characters" class="add-comment--input"></textarea>
+                <button class="add-comment--submit btn">Add</button>
+            </div>
+        </div>
+    </div>
 </div>
 <span class="section-label answer-amount"><%= question.answers %> Answers</span>
 <div class="answers-wrapper">
     <% links.forEach(link => {
         const answer = link.answer;
     %>
-    <div class="answer-wrapper">
+    <div class="answer-container">
         <div class="answer">
             <div class="answer--split">
                 <div class="answer--voting" data-link-id="<%= link.id %>" data-answer-id="<%= answer.id %>">
@@ -91,7 +108,7 @@
                     <% }); %>
                 </div>
             </details>
-            <div class="add-comment-wrapper answer"  data-link-id="<%= link.id %>">
+            <div class="add-comment-wrapper answer-type"  data-link-id="<%= link.id %>">
                 <span class="add-comment--button">Add Comment</span>
                 <div class="add-comment--editor">
                     <textarea placeholder="At least 15 characters" class="add-comment--input"></textarea>

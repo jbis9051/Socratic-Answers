@@ -1,10 +1,17 @@
 .main-content {
     padding: 40px;
 }
-
+.question-wrapper {
+    margin: 30px auto 10px;
+    width: 90%;
+    max-width: 1200px;
+}
 .question {
-    padding-bottom: 10px;
     border-bottom: 2px solid gray;
+    background: #2c2a35;
+    padding: 25px;
+    border-radius: 0.25rem 0.25rem 0 0;
+    margin: 30px auto 0;
 }
 
 .question--title {

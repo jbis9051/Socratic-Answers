@@ -1,7 +1,7 @@
 const conn = require('../database/postges.js').pool;
 const TimeAgo = require('javascript-time-ago');
 
-const Answer = require('../models/Answer');
+const Comment = require('../models/Comment');
 const markdown = require('../helpers/markdown');
 
 TimeAgo.addLocale(require('javascript-time-ago/locale/en'));
@@ -121,6 +121,15 @@ class Question {
                 tag_string: row.tag_string,
                 taglist: Question.tagStringToArray(row.tag_string)
             }
+        });
+    }
+
+    async getComments(){
+        const {rows} = await conn.multiRow("SELECT * FROM \"question-comments\" WHERE question_id = $1", [this.id]);
+        return rows.map(row => {
+            const comment = new Comment(row.id, "question");
+            comment._setAttributes(row);
+            return comment;
         });
     }
 }

@@ -123,9 +123,9 @@ class LinkQA {
     }
 
     async getComments(){
-        const {rows} = await conn.multiRow("SELECT * FROM comments WHERE qa_id = $1", [this.id]);
+        const {rows} = await conn.multiRow("SELECT * FROM \"link-comments\" WHERE qa_id = $1", [this.id]);
         return rows.map(row => {
-            const comment = new Comment(row.id);
+            const comment = new Comment(row.id, "link");
             comment._setAttributes(row);
             return comment;
         });

@@ -118,25 +118,11 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
         return;
     }
     await question.fillContent();
+    question.comments = await question.getComments();
+
     const links = await LinkQA.getAnswers(question.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
     await Promise.all(links.map(async link => {
         link.comments = await link.getComments();
-        link.comments.push({
-            renderedContent: 'Hello World!',
-            creator: {
-                id: 1,
-                username: "jbis9051",
-            },
-            created: new Date()
-        });
-        link.comments.push({
-            renderedContent: '@jbis9051 Long Text Super Long Really Long. Yes! No. Maybe? More long text supercalifragilistic.',
-            creator: {
-                id: 1,
-                username: "jbis9051",
-            },
-            created: new Date()
-        });
         const answer = link.answer;
         await answer.fillContent();
         answer.votes = await link.getVotes();
