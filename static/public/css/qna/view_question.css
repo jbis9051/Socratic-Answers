@@ -1,10 +1,17 @@
 .main-content {
     padding: 40px;
 }
-
+.question-wrapper {
+    margin: 30px auto 10px;
+    width: 90%;
+    max-width: 1200px;
+}
 .question {
-    padding-bottom: 10px;
     border-bottom: 2px solid gray;
+    background: #2c2a35;
+    padding: 25px;
+    border-radius: 0.25rem 0.25rem 0 0;
+    margin: 30px auto 0;
 }
 
 .question--title {
@@ -46,10 +53,6 @@
 
 }
 
-.answers-wrapper {
-    margin-top: 10px;
-}
-
 .add-answer-input {
     font-size: 15px;
     width: 100%;
@@ -62,17 +65,26 @@
     padding: 10px 5px 5px;
 }
 
-.answer {
-    border-bottom: 1px solid #b0b0b0;
-    padding: 0;
+.answers-wrapper {
+    margin: 30px auto 10px;
+    width: 90%;
+    max-width: 1200px;
 }
 
-.answer--meta {
-    padding: 20px;
+.answer {
+    border-bottom: 1px solid #b0b0b0;
+    background: #2c2a35;
+    padding: 0;
+    border-radius: 0.25rem 0.25rem 0 0;
+    margin: 30px auto 0;
 }
 
 .answer:last-child {
     border: none;
+}
+
+.answer--meta {
+    padding: 20px;
 }
 
 .author {
@@ -146,4 +158,22 @@
 
 .clickable {
     cursor: pointer;
+}
+
+
+.comments-wrapper {
+    background: #2c2a35;
+    padding: 20px;
+    width: calc(100% - 20px);
+    margin-left: 20px;
+    font-size: 15px;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+.comments-container summary {
+    user-select: none;
+    -webkit-user-select: none;
+}
+.comments-container {
+    margin-top: 5px;
 }

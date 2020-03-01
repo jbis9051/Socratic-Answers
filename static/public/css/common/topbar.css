@@ -72,6 +72,10 @@
     background: #975e00;
 }
 
+.btn {
+    margin-left: 0;
+}
+
 .user-badge {
     height: 100%;
     display: inline-block;

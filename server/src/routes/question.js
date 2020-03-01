@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
+const Comment = require('../models/Comment');
+const LinkQA = require('../models/LinkQA');
 const Question = require('../models/Question');
+
 const requireUser = require('../middleware/requireUser');
 const csrfToken = require('../middleware/csurf');
 const friendlyURLPath = require('../helpers/friendlyURLPath');
 const {QuestionAskEditForm, idParam} = require('../validation');
 
-router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
+router.get('/ask', requireUser(), csrfToken, async function (req, res, next) {
     res.render('qna/ask', {
         csrfToken: req.csrfToken(),
         errors: [],
@@ -18,7 +21,7 @@ router.get('/ask', requireUser, csrfToken, async function (req, res, next) {
     });
 });
 
-router.post('/ask', requireUser, csrfToken, QuestionAskEditForm, async function (req, res, next) {
+router.post('/ask', requireUser(), csrfToken, QuestionAskEditForm, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.render('qna/ask', {
             csrfToken: req.csrfToken(),
@@ -47,7 +50,7 @@ router.get("/history/:id", idParam, async function (req, res, next) {
     res.render('qna/qhistory', {question, history});
 });
 
-router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, res, next) {
+router.get('/edit/:id', requireUser(), csrfToken, idParam, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
     }
@@ -66,7 +69,7 @@ router.get('/edit/:id', requireUser, csrfToken, idParam, async function (req, re
     });
 });
 
-router.post('/edit/:id', requireUser, csrfToken, idParam, QuestionAskEditForm, async function (req, res, next) {
+router.post('/edit/:id', requireUser(), csrfToken, idParam, QuestionAskEditForm, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         return next();
     }
@@ -115,13 +118,16 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
         return;
     }
     await question.fillContent();
-    const answers = await question.getAnswers(req.site.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
-    await Promise.all(answers.map(async answer => {
+    question.comments = await question.getComments();
+
+    const links = await LinkQA.getAnswers(question.id, parseInt(req.query.page) || 1, req.query.sort || "newest");
+    await Promise.all(links.map(async link => {
+        link.comments = await link.getComments();
+        const answer = link.answer;
         await answer.fillContent();
-        const qaID = await answer.getQaId(question.id);
-        answer.votes = await answer.getVotes(qaID);
+        answer.votes = await link.getVotes();
         if (req.user) {
-            answer.userSelected = await answer.getVoteForUser(qaID, req.user.id);
+            answer.userSelected = await link.getVoteForUser(req.user.id);
         } else {
             answer.userSelected = null;
         }
@@ -131,7 +137,7 @@ router.get('/:id/:title', idParam, async function (req, res, next) {
             answer.userSelected = "downvote";
         }
     }));
-    res.render('qna/view_question', {question, answers});
+    res.render('qna/view_question', {question, links});
 });
 
 

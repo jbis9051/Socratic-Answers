@@ -5,16 +5,18 @@
     <%- include('../components/common/standard-head') %>
     <link rel="stylesheet" href="/css/md.css">
     <link rel="stylesheet" href="/css/qna/tags.css">
+    <link rel="stylesheet" href="/css/qna/comments.css">
     <link rel="stylesheet" href="/css/qna/view_question.css">
     <script src="/js/markdown-editor.js"></script>
     <title><%= question.title %></title>
 </head>
 <body>
 <%- include('../components/common/topbar' ) %>
-<div class="main-content question-wrapper">
+<div class="question-wrapper">
     <div class="question">
         <h1 class="question--title"><%= question.title %></h1>
-        <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (<a href="/questions/history/<%= question.id %>">modified <%= question.last_modified.toISOString() %>)</a></span>
+        <span class="question--date">created <%= question.getCreatedFriendlyTimeAgo() %> (<a
+                    href="/questions/history/<%= question.id %>">modified <%= question.last_modified.toISOString() %>)</a></span>
         <div class="question--body md-body">
             <%- question.renderedContent %>
         </div>
@@ -31,13 +33,33 @@
         <span class="author">Authored by <a
                     href="/users/<%= question.creator.id %>/<%= question.creator.id %>"><%= question.creator.username %></a></span>
     </div>
+    <div class="comments-wrapper">
+        <details>
+            <summary>Comments</summary>
+            <div class="comments-container">
+                <% question.comments.forEach(comment => { %>
+                    <%- include('./comment.ejs',{comment}) %>
+                <% }); %>
+            </div>
+        </details>
+        <div class="add-comment-wrapper question-type"  data-question-id="<%= question.id %>">
+            <span class="add-comment--button">Add Comment</span>
+            <div class="add-comment--editor">
+                <textarea placeholder="At least 15 characters" class="add-comment--input"></textarea>
+                <button class="add-comment--submit btn">Add</button>
+            </div>
+        </div>
+    </div>
 </div>
 <span class="section-label answer-amount"><%= question.answers %> Answers</span>
 <div class="answers-wrapper">
-    <% answers.forEach(answer => { %>
-        <div class="main-content answer">
+    <% links.forEach(link => {
+        const answer = link.answer;
+    %>
+    <div class="answer-container">
+        <div class="answer">
             <div class="answer--split">
-                <div class="answer--voting" data-answer-id="<%= answer.id %>">
+                <div class="answer--voting" data-link-id="<%= link.id %>" data-answer-id="<%= answer.id %>">
                     <svg class="upvote clickable arrow <%= answer.userSelected === "upvote" ? "selected" : "" %>"
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon class="cls-1" points="0 23.59 16 0 32 23.59 0 23.59"/>
@@ -48,7 +70,7 @@
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 23.59">
                         <polygon points="32 0 16 23.59 0 0 32 0"/>
                     </svg>
-                    <% if(answer.is_solution) { %>
+                    <% if(link.answer_is_solution) { %>
                         <span class="solution_mark is_solution clickable">✓</span>
                     <% } else if(currentUser && question.creator.id === currentUser.id){ %>
                         <span class="solution_mark clickable">✓</span>
@@ -59,7 +81,8 @@
                 </div>
             </div>
             <div class="answer--meta">
-                <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> <a href="/answers/history/<%=answer.id %>">(modified <%= answer.last_modified.toISOString() %>)</a></span>
+            <span class="answer--date">created <%= answer.getCreatedFriendlyTimeAgo() %> <a
+                        href="/answers/history/<%= answer.id %>">(modified <%= answer.last_modified.toISOString() %>)</a></span>
                 <div class="post--operations">
                     <% if(answer.initial_question_id === null) { %>
                         <a class="post--operation" href="/answers/<%= answer.id %>">original</a> /
@@ -74,9 +97,26 @@
                 </div>
                 <span class="author">Authored by <a
                             href="/users/<%= answer.creator.id %>/<%= answer.creator.id %>"><%= answer.creator.username %></a></span>
-
             </div>
         </div>
+        <div class="comments-wrapper">
+            <details>
+                <summary>Comments</summary>
+                <div class="comments-container">
+                    <% link.comments.forEach(comment => { %>
+                        <%- include('./comment.ejs',{comment}) %>
+                    <% }); %>
+                </div>
+            </details>
+            <div class="add-comment-wrapper answer-type"  data-link-id="<%= link.id %>">
+                <span class="add-comment--button">Add Comment</span>
+                <div class="add-comment--editor">
+                    <textarea placeholder="At least 15 characters" class="add-comment--input"></textarea>
+                    <button class="add-comment--submit btn">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <% }) %>
 </div>
 <div class="main-content add-answers">
@@ -96,6 +136,7 @@
     const questionid = <%= question.id %>;
     const loggedIn = <%= !!currentUser %>;
 </script>
+<script src="/js/qna/comments.js"></script>
 <script src="/js/qna/view_question.js"></script>
 </body>
 </html>

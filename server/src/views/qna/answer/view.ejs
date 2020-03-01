@@ -29,7 +29,7 @@
     <% if(linkedQuestions.length > 0){ %>
         <ul>
             <% linkedQuestions.forEach(linkedQuestion => { %>
-                <li><a href="/questions/<%= linkedQuestion.id %>"><%= linkedQuestion.title %></a></li>
+                <li><a href="/questions/<%= linkedQuestion.question.id %>"><%= linkedQuestion.question.title %></a></li>
             <% }); %>
         </ul>
     <% } else { %>

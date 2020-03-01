@@ -4,8 +4,7 @@ const router = express.Router();
 const requireUser = require('../middleware/requireUser');
 const {VoteValidation} = require('../validation');
 
-const Answer = require('../models/Answer');
-const Question = require("../models/Question");
+const LinkQA = require('../models/LinkQA');
 
 router.post('/vote', VoteValidation, async function (req, res, next) {
     if (!req.user) {
@@ -23,114 +22,98 @@ router.post('/vote', VoteValidation, async function (req, res, next) {
     const upvote = req.body.upvote === "true";
 
 
-    const answer = await Answer.FromId(req.body.answer);
-    const qaId = await answer.getQaId(req.body.question);
+    const linkQA = await LinkQA.FromId(req.body.qa_id);
 
-    if (!qaId) {
+    if (!linkQA) {
         res.status(422);
-        res.json({success: false, error: "Unable To Find Q-A Pair"});
+        res.json({success: false, error: "Unable To Find Link"});
         return;
     }
 
-    if (req.user.id === answer.creator.id) {
-        res.status(401);
-        res.json({success: false, error: "You can't vote on your own post"});
-        return;
-    }
+    await linkQA.answer.init();
 
-    await req.user.vote(qaId, upvote);
+    if (req.user.id === linkQA.answer.creator.id) {
+         res.status(401);
+         res.json({success: false, error: "You can't vote on your own post"});
+         return;
+     }
+
+    await linkQA.vote(req.user.id, upvote);
     res.json({success: true, error: ""});
 });
 
-router.post('/unvote', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/unvote', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
         return;
     }
 
-    const answer = new Answer(req.body.answer);
-    const qaId = await answer.getQaId(req.body.question);
+    const linkQA = await LinkQA.FromId(req.body.qa_id);
 
-    if (!qaId) {
+    if (!linkQA) {
         res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
         return;
     }
 
-    await req.user.removeVote(qaId);
+    await linkQA.removeVote(req.user.id);
     res.json({success: true, error: ""});
 });
 
-router.post('/solutionize', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/solutionize', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
         return;
     }
 
-    const answer = new Answer(req.body.answer);
-    const question = await Question.FromId(req.body.question);
-    const qaId = await answer.getQaId(req.body.question);
+    const linkQA = await LinkQA.FromId(req.body.qa_id);
 
-    if (!qaId) {
+    if (!linkQA) {
         res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
         return;
     }
 
-    if (question.creator.id !== req.user.id) {
+    await linkQA.question.init();
+
+
+    if (linkQA.question.creator.id !== req.user.id) {
         res.status(401);
         res.json({success: false, error: "Unauthorized"});
         return;
     }
 
-    await req.user.solutionize(qaId);
+    await linkQA.solutionize();
     res.json({success: true, error: ""});
 });
 
-router.post('/unsolutionize', VoteValidation, async function (req, res, next) {
-    if (!req.user) {
-        res.status(401);
-        res.json({success: false, error: "Not logged in"});
-        return;
-    }
-
+router.post('/unsolutionize', requireUser({json: true}), VoteValidation, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
         res.json({success: false, error: "Bad Input"});
         return;
     }
 
-    const answer = new Answer(req.body.answer);
-    const question = await Question.FromId(req.body.question);
-    const qaId = await answer.getQaId(req.body.question);
+    const linkQA = await LinkQA.FromId(req.body.qa_id);
 
-    if (!qaId) {
+    if (!linkQA) {
         res.status(422);
         res.json({success: false, error: "Unable To Find Q-A Pair"});
         return;
     }
 
-    if (question.creator.id !== req.user.id) {
+    await linkQA.question.init();
+
+    if (linkQA.question.creator.id !== req.user.id) {
         res.status(401);
         res.json({success: false, error: "Unauthorized"});
         return;
     }
 
-    await req.user.unsolutionize(qaId);
+    await linkQA.unsolutionize();
+
     res.json({success: true, error: ""});
 });
 
