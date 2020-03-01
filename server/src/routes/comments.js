@@ -24,7 +24,7 @@ router.post("/add", requireUser({json: true}), CommentsValidatorFormCreate, func
         }
     })
 });
-
+/*
 router.post("/edit/:id", requireUser({json: true}), CommentsValidatorFormEdit, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
         res.status(400);
@@ -42,7 +42,7 @@ router.post("/edit/:id", requireUser({json: true}), CommentsValidatorFormEdit, a
     }
     await comment.edit(req.body.content);
     res.json({success: true, errors: []});
-});
+});*/
 
 router.post("/delete/:id", requireUser({json: true}), CommentsValidatorFormDelete, async function (req, res, next) {
     if (req.validationErrors[0].length > 0) {
