@@ -2,5 +2,5 @@
     <span class="comment--content"><%- comment.renderedContent %></span> — <a class="comment--creator"
                                                                               href="/users/<%= comment.creator.id %>"><%= comment.creator.username %></a>
     at
-    <a><%= comment.created.toISOString() %></a> <%- comment.creator.id === currentUser.id ? '- <span class="comment--delete">Delete</span>' : "" %>
+    <a><%= comment.created.toISOString() %></a> <%- currentUser && comment.creator.id === currentUser.id ? '- <span class="comment--delete">Delete</span>' : "" %>
 </div>

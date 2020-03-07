@@ -4,11 +4,15 @@ body {
     padding-top: 100px; /* 60px */
     background: #16151b;
     color: #e2e2e2;
+    font-size: 16px;
 }
 
 @media screen  and  (max-width: 500px){
     body {
         padding-top: 130px; /* 90px */
+    }
+    body {
+        font-size: 13px;
     }
 }
 
